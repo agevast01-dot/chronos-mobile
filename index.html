@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     
     <!-- PWA Meta Tags -->
-    <meta name="theme-color" content="#0F1117">
+    <meta name="theme-color" content="#0F1117" id="theme-color-meta">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Chronos">
@@ -32,6 +32,7 @@
     
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -48,6 +49,10 @@
                         financial: '#10B981',
                         danger: '#EF4444',
                         success: '#22C55E',
+                        lightBg: '#F3F4F6',
+                        lightSurface: '#FFFFFF',
+                        lightText: '#1F2937',
+                        lightTextMuted: '#6B7280',
                     }
                 }
             }
@@ -65,7 +70,42 @@
             color: #E5E7EB;
             font-family: 'Inter', sans-serif;
             overscroll-behavior-y: none;
-            padding-bottom: env(safe-area-inset-bottom);
+            padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            background: #F3F4F6;
+            color: #1F2937;
+        }
+        body.light-mode .bg-surface {
+            background: #FFFFFF;
+            border-color: #E5E7EB;
+        }
+        body.light-mode .text-white {
+            color: #1F2937;
+        }
+        body.light-mode .text-gray-400 {
+            color: #6B7280;
+        }
+        body.light-mode .text-gray-500 {
+            color: #9CA3AF;
+        }
+        body.light-mode .text-gray-600 {
+            color: #4B5563;
+        }
+        body.light-mode .border-gray-800 {
+            border-color: #E5E7EB;
+        }
+        body.light-mode .border-gray-700 {
+            border-color: #D1D5DB;
+        }
+        body.light-mode .bg-bg {
+            background: #F9FAFB;
+        }
+        body.light-mode .bg-surfaceHighlight {
+            background: #F3F4F6;
         }
 
         /* Hide scrollbar but keep functionality */
@@ -110,32 +150,10 @@
             stroke-linecap: round;
         }
         .progress-bg {
-            stroke: #252932;
+            stroke: #E5E7EB;
         }
         .progress-bar {
             transition: stroke-dashoffset 0.5s ease;
-        }
-
-        /* Swipe Action */
-        .swipeable {
-            position: relative;
-            overflow: hidden;
-        }
-        .swipe-action {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #22C55E;
-            transform: translateX(100%);
-            transition: transform 0.3s ease;
-        }
-        .swipeable.swiped .swipe-action {
-            transform: translateX(0);
         }
 
         /* Tab Transition */
@@ -170,20 +188,128 @@
             z-index: 9999;
         }
 
-        /* Safe Area for Notch Devices */
-        .safe-top {
-            padding-top: env(safe-area-inset-top);
+        /* Bottom Navigation - FIXED */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #1A1D24;
+            border-top: 1px solid #252932;
+            padding: 12px 24px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
         }
-        .safe-bottom {
-            padding-bottom: env(safe-area-inset-bottom);
+        
+        body.light-mode .bottom-nav {
+            background: #FFFFFF;
+            border-top: 1px solid #E5E7EB;
         }
 
-        /* Nav Button Active State */
-        .nav-btn.active i {
-            color: #3B82F6 !important;
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            min-width: 60px;
         }
+
+        .nav-btn i {
+            font-size: 20px;
+            color: #6B7280;
+            transition: color 0.2s ease;
+        }
+
+        .nav-btn span {
+            font-size: 10px;
+            color: #6B7280;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+
+        .nav-btn.active i,
         .nav-btn.active span {
-            color: #3B82F6 !important;
+            color: #3B82F6;
+        }
+
+        body.light-mode .nav-btn i,
+        body.light-mode .nav-btn span {
+            color: #9CA3AF;
+        }
+
+        /* Main Content - FIXED padding for nav */
+        #main-content {
+            height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 100px;
+            padding-top: 60px;
+        }
+
+        /* Active Mode Banner */
+        #active-mode-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 999;
+            padding: calc(12px + env(safe-area-inset-top)) 16px 12px 16px;
+        }
+
+        /* Swipe Action */
+        .swipeable {
+            position: relative;
+            overflow: hidden;
+        }
+        .swipe-action {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #22C55E;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        .swipeable.swiped .swipe-action {
+            transform: translateX(0);
+        }
+
+        /* Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: #374151;
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .toggle-switch.active {
+            background: #3B82F6;
+        }
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s ease;
+        }
+        .toggle-switch.active::after {
+            transform: translateX(22px);
         }
     </style>
 </head>
@@ -193,7 +319,7 @@
     <canvas id="confetti-canvas"></canvas>
 
     <!-- Active Mode Banner (Sticky Top) -->
-    <div id="active-mode-banner" class="hidden fixed top-0 left-0 right-0 z-50 bg-primary active-mode-pulse px-4 py-3 safe-top">
+    <div id="active-mode-banner" class="hidden bg-primary active-mode-pulse">
         <div class="flex items-center justify-between max-w-md mx-auto">
             <div class="flex items-center gap-3">
                 <i class="fas fa-laptop-code text-white"></i>
@@ -209,7 +335,7 @@
     </div>
 
     <!-- Main Content Area -->
-    <main class="h-full overflow-y-auto no-scrollbar pb-24 pt-16" id="main-content">
+    <main class="h-full overflow-y-auto no-scrollbar" id="main-content">
         
         <!-- DASHBOARD TAB -->
         <div id="tab-dashboard" class="tab-content active px-4 space-y-4">
@@ -696,14 +822,12 @@
                         </div>
                         <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
                     </button>
-                    <button class="w-full p-4 flex items-center justify-between haptic active:bg-surfaceHighlight transition-colors">
+                    <button onclick="toggleDarkMode()" class="w-full p-4 flex items-center justify-between haptic active:bg-surfaceHighlight transition-colors">
                         <div class="flex items-center gap-3">
                             <i class="fas fa-moon text-gray-400"></i>
                             <span class="text-white text-sm">Dark Mode</span>
                         </div>
-                        <div class="w-12 h-6 bg-primary rounded-full relative">
-                            <div class="absolute right-1 top-1 w-4 h-4 bg-white rounded-full"></div>
-                        </div>
+                        <div class="toggle-switch active" id="dark-mode-toggle"></div>
                     </button>
                     <button class="w-full p-4 flex items-center justify-between haptic active:bg-surfaceHighlight transition-colors">
                         <div class="flex items-center gap-3">
@@ -732,8 +856,8 @@
     </main>
 
     <!-- Bottom Sheet Modal -->
-    <div id="bottom-sheet-overlay" class="fixed inset-0 bg-black/60 z-50 hidden" onclick="hideBottomSheet()"></div>
-    <div id="bottom-sheet" class="bottom-sheet fixed bottom-0 left-0 right-0 bg-surface rounded-t-3xl z-50 max-h-[80vh] overflow-y-auto">
+    <div id="bottom-sheet-overlay" class="fixed inset-0 bg-black/60 z-[1001] hidden" onclick="hideBottomSheet()"></div>
+    <div id="bottom-sheet" class="bottom-sheet fixed bottom-0 left-0 right-0 bg-surface rounded-t-3xl z-[1002] max-h-[80vh] overflow-y-auto">
         <div class="p-4 border-b border-gray-800 flex items-center justify-between sticky top-0 bg-surface">
             <h3 class="text-lg font-bold text-white" id="sheet-title">Action</h3>
             <button onclick="hideBottomSheet()" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center haptic">
@@ -745,34 +869,73 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-surface border-t border-gray-800 px-6 py-3 safe-bottom z-40">
-        <div class="flex justify-around items-center max-w-md mx-auto">
-            <button onclick="switchTab('dashboard')" class="nav-btn active flex flex-col items-center gap-1 haptic" data-tab="dashboard">
-                <i class="fas fa-home text-xl text-primary"></i>
-                <span class="text-[10px] text-primary font-medium">Home</span>
-            </button>
-            <button onclick="switchTab('modes')" class="nav-btn flex flex-col items-center gap-1 haptic" data-tab="modes">
-                <i class="fas fa-gamepad text-xl text-gray-400"></i>
-                <span class="text-[10px] text-gray-400 font-medium">Modes</span>
-            </button>
-            <button onclick="switchTab('wealth')" class="nav-btn flex flex-col items-center gap-1 haptic" data-tab="wealth">
-                <i class="fas fa-coins text-xl text-gray-400"></i>
-                <span class="text-[10px] text-gray-400 font-medium">Wealth</span>
-            </button>
-            <button onclick="switchTab('analytics')" class="nav-btn flex flex-col items-center gap-1 haptic" data-tab="analytics">
-                <i class="fas fa-chart-line text-xl text-gray-400"></i>
-                <span class="text-[10px] text-gray-400 font-medium">Progress</span>
-            </button>
-            <button onclick="switchTab('profile')" class="nav-btn flex flex-col items-center gap-1 haptic" data-tab="profile">
-                <i class="fas fa-user text-xl text-gray-400"></i>
-                <span class="text-[10px] text-gray-400 font-medium">You</span>
-            </button>
-        </div>
+    <!-- Bottom Navigation - FIXED -->
+    <nav class="bottom-nav" id="bottom-nav">
+        <button onclick="switchTab('dashboard')" class="nav-btn active" data-tab="dashboard">
+            <i class="fas fa-home"></i>
+            <span>Home</span>
+        </button>
+        <button onclick="switchTab('modes')" class="nav-btn" data-tab="modes">
+            <i class="fas fa-gamepad"></i>
+            <span>Modes</span>
+        </button>
+        <button onclick="switchTab('wealth')" class="nav-btn" data-tab="wealth">
+            <i class="fas fa-coins"></i>
+            <span>Wealth</span>
+        </button>
+        <button onclick="switchTab('analytics')" class="nav-btn" data-tab="analytics">
+            <i class="fas fa-chart-line"></i>
+            <span>Progress</span>
+        </button>
+        <button onclick="switchTab('profile')" class="nav-btn" data-tab="profile">
+            <i class="fas fa-user"></i>
+            <span>You</span>
+        </button>
     </nav>
 
     <script>
-        // Tab Switching
+        // Dark Mode Toggle - FIXED
+        let isDarkMode = true;
+        
+        function toggleDarkMode() {
+            isDarkMode = !isDarkMode;
+            const body = document.body;
+            const toggle = document.getElementById('dark-mode-toggle');
+            const themeMeta = document.getElementById('theme-color-meta');
+            
+            if (isDarkMode) {
+                body.classList.remove('light-mode');
+                toggle.classList.add('active');
+                themeMeta.setAttribute('content', '#0F1117');
+            } else {
+                body.classList.add('light-mode');
+                toggle.classList.remove('active');
+                themeMeta.setAttribute('content', '#F3F4F6');
+            }
+            
+            // Save preference
+            localStorage.setItem('darkMode', isDarkMode);
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+
+        // Load saved preference
+        function loadDarkModePreference() {
+            const saved = localStorage.getItem('darkMode');
+            if (saved !== null) {
+                isDarkMode = saved === 'true';
+                if (!isDarkMode) {
+                    document.body.classList.add('light-mode');
+                    document.getElementById('dark-mode-toggle').classList.remove('active');
+                    document.getElementById('theme-color-meta').setAttribute('content', '#F3F4F6');
+                }
+            }
+        }
+
+        // Tab Switching - FIXED
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
@@ -780,24 +943,18 @@
             document.getElementById(`tab-${tabName}`).classList.add('active');
             
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                const icon = btn.querySelector('i');
-                const text = btn.querySelector('span');
+                btn.classList.remove('active');
                 if (btn.dataset.tab === tabName) {
                     btn.classList.add('active');
-                    icon.classList.remove('text-gray-400');
-                    icon.classList.add('text-primary');
-                    text.classList.remove('text-gray-400');
-                    text.classList.add('text-primary');
-                } else {
-                    btn.classList.remove('active');
-                    icon.classList.add('text-gray-400');
-                    icon.classList.remove('text-primary');
-                    text.classList.add('text-gray-400');
-                    text.classList.remove('text-primary');
                 }
             });
             
             document.getElementById('main-content').scrollTop = 0;
+            
+            // Haptic feedback
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
         }
 
         // Bottom Sheet
@@ -952,7 +1109,7 @@
         // Notifications
         function showNotification(title, body) {
             const toast = document.createElement('div');
-            toast.className = 'fixed top-16 left-4 right-4 bg-surface border border-primary text-white px-4 py-3 rounded-xl shadow-2xl z-50 transform -translate-y-full transition-transform duration-300';
+            toast.className = 'fixed top-20 left-4 right-4 bg-surface border border-primary text-white px-4 py-3 rounded-xl shadow-2xl z-[1003] transform -translate-y-full transition-transform duration-300';
             toast.innerHTML = `
                 <p class="font-bold text-sm">${title}</p>
                 <p class="text-xs text-gray-400">${body}</p>
@@ -1029,6 +1186,7 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            loadDarkModePreference();
             requestNotificationPermission();
             
             const hour = new Date().getHours();
@@ -1050,7 +1208,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
+                navigator.serviceWorker.register('./sw.js')
                     .then((reg) => console.log('✅ Service Worker registered'))
                     .catch((err) => console.log('❌ Service Worker registration failed:', err));
             });
