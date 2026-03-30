@@ -9,6 +9,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Chronos">
+    <meta name="mobile-web-app-capable" content="yes">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -16,8 +17,7 @@
     
     <title>Chronos Mobile</title>
     
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -25,10 +25,7 @@
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
                     colors: {
                         bg: '#0F1117',
                         surface: '#1A1D24',
@@ -44,243 +41,159 @@
     </script>
 
     <style>
-        * {
-            -webkit-tap-highlight-color: transparent;
-            box-sizing: border-box;
-        }
-        
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background: #0F1117;
-            color: #E5E7EB;
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            overflow: hidden; background: #0F1117; color: #E5E7EB;
             font-family: 'Inter', sans-serif;
         }
-
-        /* Main Content - MUST leave room for nav */
         #main-content {
-            height: 100vh;
-            overflow-y: auto;
-            padding-bottom: 100px;
-            padding-top: 20px;
+            height: 100vh; overflow-y: auto;
+            padding-bottom: 100px; padding-top: 20px;
         }
-
-        /* Tab Content */
-        .tab-content {
-            display: none;
-            padding: 16px;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        /* BOTTOM NAVIGATION - GUARANTEED VISIBLE */
+        .tab-content { display: none; padding: 16px; }
+        .tab-content.active { display: block; }
+        
+        /* BOTTOM NAVIGATION */
         #bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: #1A1D24;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            height: 70px; background: #1A1D24;
             border-top: 1px solid #252932;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 9999;
+            display: flex; justify-content: space-around;
+            align-items: center; z-index: 9999;
             padding-bottom: env(safe-area-inset-bottom);
         }
-
         .nav-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: transparent;
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            flex: 1;
-            max-width: 80px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            background: transparent; border: none;
+            padding: 8px 12px; cursor: pointer;
+            flex: 1; max-width: 80px;
         }
-
-        .nav-btn i {
-            font-size: 22px;
-            color: #6B7280;
-            margin-bottom: 4px;
-        }
-
-        .nav-btn span {
-            font-size: 11px;
-            color: #6B7280;
-            font-weight: 500;
-        }
-
-        .nav-btn.active i,
-        .nav-btn.active span {
-            color: #3B82F6;
-        }
-
-        .nav-btn:active {
-            transform: scale(0.95);
-        }
-
+        .nav-btn i { font-size: 22px; color: #6B7280; margin-bottom: 4px; }
+        .nav-btn span { font-size: 11px; color: #6B7280; font-weight: 500; }
+        .nav-btn.active i, .nav-btn.active span { color: #3B82F6; }
+        .nav-btn:active { transform: scale(0.95); }
+        
         /* Cards */
         .card {
-            background: #1A1D24;
-            border: 1px solid #252932;
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 16px;
+            background: #1A1D24; border: 1px solid #252932;
+            border-radius: 16px; padding: 16px; margin-bottom: 16px;
         }
-
+        
         /* Progress Bars */
         .progress-bg {
-            background: #252932;
-            border-radius: 4px;
-            height: 8px;
-            width: 100%;
+            background: #252932; border-radius: 4px;
+            height: 8px; width: 100%;
         }
         .progress-fill {
-            border-radius: 4px;
-            height: 8px;
+            border-radius: 4px; height: 8px;
             transition: width 0.3s ease;
         }
-
+        
         /* Buttons */
         .btn {
-            background: #1A1D24;
-            border: 1px solid #252932;
-            border-radius: 12px;
-            padding: 16px;
-            text-align: left;
-            cursor: pointer;
+            background: #1A1D24; border: 1px solid #252932;
+            border-radius: 12px; padding: 16px;
+            text-align: left; cursor: pointer;
         }
-        .btn:active {
-            transform: scale(0.98);
+        .btn:active { transform: scale(0.98); }
+        
+        /* Install Button */
+        #install-btn {
+            background: #3B82F6; color: white;
+            border: none; border-radius: 12px;
+            padding: 16px; width: 100%;
+            font-weight: 600; font-size: 16px;
+            cursor: pointer; display: none;
+            margin-bottom: 16px;
         }
-
+        #install-btn.show { display: block; }
+        #install-btn:active { transform: scale(0.98); }
+        
         /* Active Mode Banner */
         #active-mode-banner {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: #3B82F6;
-            padding: 16px;
-            z-index: 9998;
-            display: none;
+            position: fixed; top: 0; left: 0; right: 0;
+            background: #3B82F6; padding: 16px;
+            z-index: 9998; display: none;
         }
-        #active-mode-banner.show {
-            display: block;
-        }
-
+        #active-mode-banner.show { display: block; }
+        
         /* Bottom Sheet */
         #bottom-sheet-overlay {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: rgba(0,0,0,0.7);
-            z-index: 10000;
-            display: none;
+            z-index: 10000; display: none;
         }
-        #bottom-sheet-overlay.show {
-            display: block;
-        }
+        #bottom-sheet-overlay.show { display: block; }
         #bottom-sheet {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: #1A1D24;
-            border-radius: 20px 20px 0 0;
-            padding: 20px;
-            z-index: 10001;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #1A1D24; border-radius: 20px 20px 0 0;
+            padding: 20px; z-index: 10001;
             transform: translateY(100%);
             transition: transform 0.3s ease;
-            max-height: 80vh;
-            overflow-y: auto;
+            max-height: 80vh; overflow-y: auto;
         }
-        #bottom-sheet.show {
-            transform: translateY(0);
-        }
-
+        #bottom-sheet.show { transform: translateY(0); }
+        
         /* Toggle Switch */
         .toggle {
-            width: 50px;
-            height: 28px;
-            background: #374151;
-            border-radius: 14px;
-            position: relative;
-            cursor: pointer;
+            width: 50px; height: 28px;
+            background: #374151; border-radius: 14px;
+            position: relative; cursor: pointer;
         }
-        .toggle.active {
-            background: #3B82F6;
-        }
+        .toggle.active { background: #3B82F6; }
         .toggle::after {
-            content: '';
-            position: absolute;
-            top: 4px;
-            left: 4px;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
+            content: ''; position: absolute;
+            top: 4px; left: 4px; width: 20px; height: 20px;
+            background: white; border-radius: 50%;
             transition: transform 0.3s;
         }
-        .toggle.active::after {
-            transform: translateX(22px);
-        }
-
+        .toggle.active::after { transform: translateX(22px); }
+        
         /* Confetti */
         #confetti-canvas {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 10002;
+            position: fixed; inset: 0;
+            pointer-events: none; z-index: 10002;
         }
-
-        /* Toast Notification */
+        
+        /* Toast */
         .toast {
-            position: fixed;
-            top: 80px;
-            left: 20px;
-            right: 20px;
-            background: #1A1D24;
-            border: 1px solid #3B82F6;
-            border-radius: 12px;
-            padding: 16px;
-            z-index: 10003;
-            transform: translateY(-100px);
+            position: fixed; top: 80px; left: 20px; right: 20px;
+            background: #1A1D24; border: 1px solid #3B82F6;
+            border-radius: 12px; padding: 16px;
+            z-index: 10003; transform: translateY(-100px);
             transition: transform 0.3s ease;
         }
-        .toast.show {
-            transform: translateY(0);
-        }
-
+        .toast.show { transform: translateY(0); }
+        
         /* Light Mode */
-        body.light-mode {
-            background: #F3F4F6;
-            color: #1F2937;
+        body.light-mode { background: #F3F4F6; color: #1F2937; }
+        body.light-mode .card, body.light-mode .btn, body.light-mode #bottom-nav {
+            background: #FFFFFF; border-color: #E5E7EB;
         }
-        body.light-mode .card,
-        body.light-mode .btn,
-        body.light-mode #bottom-nav {
-            background: #FFFFFF;
-            border-color: #E5E7EB;
+        body.light-mode .text-white { color: #1F2937 !important; }
+        body.light-mode .text-gray-400 { color: #6B7280 !important; }
+        
+        /* Install Instructions Box */
+        .install-instructions {
+            background: #252932; border-radius: 12px;
+            padding: 16px; margin-bottom: 16px; display: none;
         }
-        body.light-mode .text-white {
-            color: #1F2937 !important;
+        .install-instructions.show { display: block; }
+        .install-instructions h4 {
+            color: white; font-size: 14px;
+            font-weight: 600; margin-bottom: 8px;
         }
-        body.light-mode .text-gray-400 {
-            color: #6B7280 !important;
+        .install-instructions ol {
+            color: #9CA3AF; font-size: 13px;
+            margin: 0; padding-left: 20px;
         }
+        .install-instructions li { margin-bottom: 4px; }
     </style>
 </head>
 <body>
 
-    <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
 
     <!-- Active Mode Banner -->
@@ -467,6 +380,21 @@
             <h1 class="text-2xl font-bold text-white mb-2">Profile</h1>
             <p class="text-gray-400 text-sm mb-4">Settings & preferences</p>
 
+            <!-- INSTALL BUTTON (NEW) -->
+            <button id="install-btn" onclick="installApp()">
+                <i class="fas fa-download mr-2"></i> Install Chronos App
+            </button>
+
+            <!-- Install Instructions (for iOS) -->
+            <div id="install-instructions" class="install-instructions">
+                <h4><i class="fab fa-apple mr-2"></i>Install on iPhone:</h4>
+                <ol>
+                    <li>Tap the <strong>Share</strong> button (⬆️ square with arrow)</li>
+                    <li>Scroll down and tap <strong>"Add to Home Screen"</strong></li>
+                    <li>Tap <strong>"Add"</strong> in the top right</li>
+                </ol>
+            </div>
+
             <div class="card text-center">
                 <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-purple-500 mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white">JD</div>
                 <h2 class="text-xl font-bold text-white mb-1">John Doe</h2>
@@ -506,7 +434,7 @@
 
     </main>
 
-    <!-- BOTTOM NAVIGATION - GUARANTEED VISIBLE -->
+    <!-- BOTTOM NAVIGATION -->
     <nav id="bottom-nav">
         <button class="nav-btn active" onclick="switchTab('dashboard')" data-tab="dashboard">
             <i class="fas fa-home"></i>
@@ -549,6 +477,57 @@
     </div>
 
     <script>
+        // PWA Install Logic
+        let deferredPrompt;
+        const installBtn = document.getElementById('install-btn');
+        const installInstructions = document.getElementById('install-instructions');
+
+        // Listen for install prompt (Android)
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBtn.classList.add('show');
+            console.log('✅ Install prompt available');
+        });
+
+        // Detect iOS (show instructions instead)
+        function isIOS() {
+            return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        }
+
+        // Install App Function
+        function installApp() {
+            if (deferredPrompt) {
+                // Android - trigger install
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        showToast('Installing...', 'Chronos is being installed');
+                        triggerConfetti();
+                    }
+                    deferredPrompt = null;
+                    installBtn.classList.remove('show');
+                });
+            } else if (isIOS()) {
+                // iOS - show instructions
+                installInstructions.classList.add('show');
+                showToast('iOS Installation', 'Follow the instructions below');
+            }
+        }
+
+        // Check if already installed
+        window.addEventListener('appinstalled', () => {
+            installBtn.classList.remove('show');
+            showToast('App Installed!', 'Chronos is now on your home screen');
+        });
+
+        // Show install button on profile tab if available
+        function checkInstallAvailability() {
+            if (isIOS()) {
+                installInstructions.classList.add('show');
+            }
+        }
+
         // Dark Mode
         let isDarkMode = true;
         
@@ -578,6 +557,11 @@
             });
             
             document.getElementById('main-content').scrollTop = 0;
+
+            // Check install availability when viewing profile
+            if (tabName === 'profile') {
+                checkInstallAvailability();
+            }
         }
 
         // Bottom Sheet
@@ -664,8 +648,7 @@
             
             for (let i = 0; i < 100; i++) {
                 particles.push({
-                    x: canvas.width / 2,
-                    y: canvas.height / 2,
+                    x: canvas.width / 2, y: canvas.height / 2,
                     vx: (Math.random() - 0.5) * 20,
                     vy: (Math.random() - 0.5) * 20,
                     life: 1,
@@ -680,12 +663,8 @@
                 particles.forEach(p => {
                     if (p.life > 0) {
                         active = true;
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.vy += 0.5;
-                        p.life -= 0.02;
-                        ctx.fillStyle = p.color;
-                        ctx.globalAlpha = p.life;
+                        p.x += p.vx; p.y += p.vy; p.vy += 0.5; p.life -= 0.02;
+                        ctx.fillStyle = p.color; ctx.globalAlpha = p.life;
                         ctx.fillRect(p.x, p.y, p.size, p.size);
                     }
                 });
