@@ -9,30 +9,20 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Chronos">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="application-name" content="Chronos">
     
     <!-- PWA Manifest -->
     <link rel="manifest" href="manifest.json">
     <link rel="apple-touch-icon" href="icon-192.png">
-    <link rel="icon" type="image/png" href="icon-192.png">
     
     <title>Chronos Mobile</title>
     
     <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-    
-    <!-- Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -42,17 +32,11 @@
                     colors: {
                         bg: '#0F1117',
                         surface: '#1A1D24',
-                        surfaceHighlight: '#252932',
                         primary: '#3B82F6',
                         physical: '#FF6B6B',
                         mental: '#3B82F6',
                         financial: '#10B981',
-                        danger: '#EF4444',
                         success: '#22C55E',
-                        lightBg: '#F3F4F6',
-                        lightSurface: '#FFFFFF',
-                        lightText: '#1F2937',
-                        lightTextMuted: '#6B7280',
                     }
                 }
             }
@@ -62,176 +46,76 @@
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
+            box-sizing: border-box;
         }
         
-        body {
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             background: #0F1117;
             color: #E5E7EB;
             font-family: 'Inter', sans-serif;
-            overscroll-behavior-y: none;
-            padding-bottom: calc(env(safe-area-inset-bottom) + 80px);
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Light Mode Styles */
-        body.light-mode {
-            background: #F3F4F6;
-            color: #1F2937;
-        }
-        body.light-mode .bg-surface {
-            background: #FFFFFF;
-            border-color: #E5E7EB;
-        }
-        body.light-mode .text-white {
-            color: #1F2937;
-        }
-        body.light-mode .text-gray-400 {
-            color: #6B7280;
-        }
-        body.light-mode .text-gray-500 {
-            color: #9CA3AF;
-        }
-        body.light-mode .text-gray-600 {
-            color: #4B5563;
-        }
-        body.light-mode .border-gray-800 {
-            border-color: #E5E7EB;
-        }
-        body.light-mode .border-gray-700 {
-            border-color: #D1D5DB;
-        }
-        body.light-mode .bg-bg {
-            background: #F9FAFB;
-        }
-        body.light-mode .bg-surfaceHighlight {
-            background: #F3F4F6;
+        /* Main Content - MUST leave room for nav */
+        #main-content {
+            height: 100vh;
+            overflow-y: auto;
+            padding-bottom: 100px;
+            padding-top: 20px;
         }
 
-        /* Hide scrollbar but keep functionality */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
-
-        /* Bottom Sheet Animation */
-        .bottom-sheet {
-            transform: translateY(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .bottom-sheet.open {
-            transform: translateY(0);
-        }
-
-        /* Pulse Animation for Active Mode */
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
-            50% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
-        }
-        .active-mode-pulse {
-            animation: pulse-glow 2s infinite;
-        }
-
-        /* Circular Progress */
-        .circular-progress {
-            position: relative;
-            width: 100px;
-            height: 100px;
-        }
-        .circular-progress svg {
-            transform: rotate(-90deg);
-        }
-        .circular-progress circle {
-            fill: none;
-            stroke-width: 8;
-            stroke-linecap: round;
-        }
-        .progress-bg {
-            stroke: #E5E7EB;
-        }
-        .progress-bar {
-            transition: stroke-dashoffset 0.5s ease;
-        }
-
-        /* Tab Transition */
+        /* Tab Content */
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s ease;
+            padding: 16px;
         }
         .tab-content.active {
             display: block;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
 
-        /* Haptic Feedback Simulation */
-        .haptic {
-            transition: transform 0.1s;
-        }
-        .haptic:active {
-            transform: scale(0.95);
-        }
-
-        /* Level Up Confetti Canvas */
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        /* Bottom Navigation - FIXED */
-        .bottom-nav {
+        /* BOTTOM NAVIGATION - GUARANTEED VISIBLE */
+        #bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
+            height: 70px;
             background: #1A1D24;
             border-top: 1px solid #252932;
-            padding: 12px 24px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-            z-index: 1000;
             display: flex;
             justify-content: space-around;
             align-items: center;
-        }
-        
-        body.light-mode .bottom-nav {
-            background: #FFFFFF;
-            border-top: 1px solid #E5E7EB;
+            z-index: 9999;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         .nav-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            padding: 8px 16px;
-            border: none;
+            justify-content: center;
             background: transparent;
+            border: none;
+            padding: 8px 12px;
             cursor: pointer;
-            min-width: 60px;
+            flex: 1;
+            max-width: 80px;
         }
 
         .nav-btn i {
-            font-size: 20px;
+            font-size: 22px;
             color: #6B7280;
-            transition: color 0.2s ease;
+            margin-bottom: 4px;
         }
 
         .nav-btn span {
-            font-size: 10px;
+            font-size: 11px;
             color: #6B7280;
             font-weight: 500;
-            transition: color 0.2s ease;
         }
 
         .nav-btn.active i,
@@ -239,17 +123,43 @@
             color: #3B82F6;
         }
 
-        body.light-mode .nav-btn i,
-        body.light-mode .nav-btn span {
-            color: #9CA3AF;
+        .nav-btn:active {
+            transform: scale(0.95);
         }
 
-        /* Main Content - FIXED padding for nav */
-        #main-content {
-            height: 100vh;
-            overflow-y: auto;
-            padding-bottom: 100px;
-            padding-top: 60px;
+        /* Cards */
+        .card {
+            background: #1A1D24;
+            border: 1px solid #252932;
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* Progress Bars */
+        .progress-bg {
+            background: #252932;
+            border-radius: 4px;
+            height: 8px;
+            width: 100%;
+        }
+        .progress-fill {
+            border-radius: 4px;
+            height: 8px;
+            transition: width 0.3s ease;
+        }
+
+        /* Buttons */
+        .btn {
+            background: #1A1D24;
+            border: 1px solid #252932;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: left;
+            cursor: pointer;
+        }
+        .btn:active {
+            transform: scale(0.98);
         }
 
         /* Active Mode Banner */
@@ -258,220 +168,200 @@
             top: 0;
             left: 0;
             right: 0;
-            z-index: 999;
-            padding: calc(12px + env(safe-area-inset-top)) 16px 12px 16px;
+            background: #3B82F6;
+            padding: 16px;
+            z-index: 9998;
+            display: none;
+        }
+        #active-mode-banner.show {
+            display: block;
         }
 
-        /* Swipe Action */
-        .swipeable {
-            position: relative;
-            overflow: hidden;
+        /* Bottom Sheet */
+        #bottom-sheet-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 10000;
+            display: none;
         }
-        .swipe-action {
-            position: absolute;
-            right: 0;
-            top: 0;
+        #bottom-sheet-overlay.show {
+            display: block;
+        }
+        #bottom-sheet {
+            position: fixed;
             bottom: 0;
-            width: 80px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #22C55E;
-            transform: translateX(100%);
+            left: 0;
+            right: 0;
+            background: #1A1D24;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            z-index: 10001;
+            transform: translateY(100%);
             transition: transform 0.3s ease;
+            max-height: 80vh;
+            overflow-y: auto;
         }
-        .swipeable.swiped .swipe-action {
-            transform: translateX(0);
+        #bottom-sheet.show {
+            transform: translateY(0);
         }
 
         /* Toggle Switch */
-        .toggle-switch {
-            position: relative;
-            width: 48px;
-            height: 26px;
+        .toggle {
+            width: 50px;
+            height: 28px;
             background: #374151;
-            border-radius: 13px;
+            border-radius: 14px;
+            position: relative;
             cursor: pointer;
-            transition: background 0.3s ease;
         }
-        .toggle-switch.active {
+        .toggle.active {
             background: #3B82F6;
         }
-        .toggle-switch::after {
+        .toggle::after {
             content: '';
             position: absolute;
-            top: 3px;
-            left: 3px;
+            top: 4px;
+            left: 4px;
             width: 20px;
             height: 20px;
             background: white;
             border-radius: 50%;
+            transition: transform 0.3s;
+        }
+        .toggle.active::after {
+            transform: translateX(22px);
+        }
+
+        /* Confetti */
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 10002;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 20px;
+            right: 20px;
+            background: #1A1D24;
+            border: 1px solid #3B82F6;
+            border-radius: 12px;
+            padding: 16px;
+            z-index: 10003;
+            transform: translateY(-100px);
             transition: transform 0.3s ease;
         }
-        .toggle-switch.active::after {
-            transform: translateX(22px);
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        /* Light Mode */
+        body.light-mode {
+            background: #F3F4F6;
+            color: #1F2937;
+        }
+        body.light-mode .card,
+        body.light-mode .btn,
+        body.light-mode #bottom-nav {
+            background: #FFFFFF;
+            border-color: #E5E7EB;
+        }
+        body.light-mode .text-white {
+            color: #1F2937 !important;
+        }
+        body.light-mode .text-gray-400 {
+            color: #6B7280 !important;
         }
     </style>
 </head>
-<body class="h-screen overflow-hidden">
+<body>
 
     <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- Active Mode Banner (Sticky Top) -->
-    <div id="active-mode-banner" class="hidden bg-primary active-mode-pulse">
-        <div class="flex items-center justify-between max-w-md mx-auto">
+    <!-- Active Mode Banner -->
+    <div id="active-mode-banner">
+        <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <i class="fas fa-laptop-code text-white"></i>
                 <div>
                     <p class="text-white text-sm font-semibold" id="mode-name">Work Mode</p>
-                    <p class="text-white/80 text-xs font-mono" id="mode-timer">2h 14m remaining</p>
+                    <p class="text-white/80 text-xs" id="mode-timer">2h 14m remaining</p>
                 </div>
             </div>
-            <button onclick="endActiveMode()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-lg text-xs font-medium haptic">
-                End
-            </button>
+            <button onclick="endActiveMode()" class="bg-white/20 text-white px-3 py-1 rounded text-xs">End</button>
         </div>
     </div>
 
-    <!-- Main Content Area -->
-    <main class="h-full overflow-y-auto no-scrollbar" id="main-content">
+    <!-- Main Content -->
+    <main id="main-content">
         
         <!-- DASHBOARD TAB -->
-        <div id="tab-dashboard" class="tab-content active px-4 space-y-4">
-            <!-- Welcome Header -->
-            <div class="pt-4 pb-2">
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="mb-4">
                 <p class="text-gray-400 text-sm" id="greeting">Good Morning</p>
                 <h1 class="text-2xl font-bold text-white">John Doe</h1>
                 <div class="flex items-center gap-2 mt-2">
-                    <img src="icon-192.png" class="w-8 h-8 rounded-full" alt="Profile">
-                    <span class="text-sm text-primary font-medium">Platinum Tier • Level 14</span>
+                    <img src="icon-192.png" class="w-8 h-8 rounded-full">
+                    <span class="text-sm text-primary">Platinum Tier • Level 14</span>
                 </div>
             </div>
 
-            <!-- Tri-Meter Stack -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800">
-                <h2 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Today's Pillars</h2>
+            <!-- Pillars -->
+            <div class="card">
+                <h2 class="text-xs font-bold text-gray-400 uppercase mb-4">Today's Pillars</h2>
                 
-                <!-- Physical -->
                 <div class="mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-dumbbell text-physical"></i>
-                            <span class="text-sm text-gray-300">Physical</span>
-                        </div>
-                        <span class="text-sm font-mono text-white">75%</span>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm"><i class="fas fa-dumbbell text-physical mr-2"></i>Physical</span>
+                        <span class="text-sm font-mono">75%</span>
                     </div>
-                    <div class="w-full bg-gray-800 rounded-full h-2">
-                        <div class="bg-physical h-2 rounded-full" style="width: 75%"></div>
-                    </div>
+                    <div class="progress-bg"><div class="progress-fill bg-[#FF6B6B]" style="width: 75%"></div></div>
                 </div>
 
-                <!-- Mental -->
                 <div class="mb-4">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-brain text-mental"></i>
-                            <span class="text-sm text-gray-300">Mental</span>
-                        </div>
-                        <span class="text-sm font-mono text-white">45%</span>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm"><i class="fas fa-brain text-mental mr-2"></i>Mental</span>
+                        <span class="text-sm font-mono">45%</span>
                     </div>
-                    <div class="w-full bg-gray-800 rounded-full h-2">
-                        <div class="bg-mental h-2 rounded-full" style="width: 45%"></div>
-                    </div>
+                    <div class="progress-bg"><div class="progress-fill bg-[#3B82F6]" style="width: 45%"></div></div>
                 </div>
 
-                <!-- Financial -->
                 <div>
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-wallet text-financial"></i>
-                            <span class="text-sm text-gray-300">Financial</span>
-                        </div>
-                        <span class="text-sm font-mono text-white">90%</span>
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm"><i class="fas fa-wallet text-financial mr-2"></i>Financial</span>
+                        <span class="text-sm font-mono">90%</span>
                     </div>
-                    <div class="w-full bg-gray-800 rounded-full h-2">
-                        <div class="bg-financial h-2 rounded-full" style="width: 90%"></div>
-                    </div>
+                    <div class="progress-bg"><div class="progress-fill bg-[#10B981]" style="width: 90%"></div></div>
                 </div>
             </div>
 
             <!-- Quick Actions -->
-            <div class="grid grid-cols-2 gap-3">
-                <button onclick="activateMode('workout')" class="bg-surface border border-gray-800 rounded-xl p-4 haptic active:scale-95 transition-transform">
-                    <i class="fas fa-dumbbell text-physical text-2xl mb-2"></i>
-                    <p class="text-white font-medium text-sm">Workout</p>
+            <div class="grid grid-cols-2 gap-3 mb-4">
+                <button onclick="activateMode('workout')" class="btn">
+                    <i class="fas fa-dumbbell text-physical text-2xl mb-2 block"></i>
+                    <span class="text-white text-sm">Workout</span>
                 </button>
-                <button onclick="activateMode('work')" class="bg-surface border border-gray-800 rounded-xl p-4 haptic active:scale-95 transition-transform">
-                    <i class="fas fa-laptop-code text-mental text-2xl mb-2"></i>
-                    <p class="text-white font-medium text-sm">Focus</p>
+                <button onclick="activateMode('work')" class="btn">
+                    <i class="fas fa-laptop-code text-mental text-2xl mb-2 block"></i>
+                    <span class="text-white text-sm">Focus</span>
                 </button>
-                <button onclick="showBottomSheet('expense')" class="bg-surface border border-gray-800 rounded-xl p-4 haptic active:scale-95 transition-transform">
-                    <i class="fas fa-plus text-financial text-2xl mb-2"></i>
-                    <p class="text-white font-medium text-sm">Log Expense</p>
+                <button onclick="showBottomSheet('expense')" class="btn">
+                    <i class="fas fa-plus text-financial text-2xl mb-2 block"></i>
+                    <span class="text-white text-sm">Expense</span>
                 </button>
-                <button onclick="showBottomSheet('habit')" class="bg-surface border border-gray-800 rounded-xl p-4 haptic active:scale-95 transition-transform">
-                    <i class="fas fa-check-circle text-primary text-2xl mb-2"></i>
-                    <p class="text-white font-medium text-sm">Complete Habit</p>
+                <button onclick="showBottomSheet('habit')" class="btn">
+                    <i class="fas fa-check-circle text-primary text-2xl mb-2 block"></i>
+                    <span class="text-white text-sm">Habit</span>
                 </button>
             </div>
 
-            <!-- Today's Habits -->
-            <div class="bg-surface rounded-2xl border border-gray-800 overflow-hidden">
-                <div class="p-4 border-b border-gray-800">
-                    <h2 class="text-sm font-bold text-white">Today's Habits</h2>
-                </div>
-                <div class="divide-y divide-gray-800" id="habits-list">
-                    <div class="swipeable bg-surface haptic" onclick="completeHabit(this)">
-                        <div class="p-4 flex items-center gap-3">
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-600 flex items-center justify-center">
-                                <i class="fas fa-check text-xs text-transparent" id="check-1"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-white text-sm font-medium">Morning Meditation</p>
-                                <p class="text-xs text-gray-500">Physical • 10 min</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
-                        </div>
-                        <div class="swipe-action">
-                            <i class="fas fa-check text-white text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="swipeable bg-surface haptic" onclick="completeHabit(this)">
-                        <div class="p-4 flex items-center gap-3">
-                            <div class="w-6 h-6 rounded-full border-2 border-gray-600 flex items-center justify-center">
-                                <i class="fas fa-check text-xs text-transparent" id="check-2"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-white text-sm font-medium">Read 20 Pages</p>
-                                <p class="text-xs text-gray-500">Mental • Daily</p>
-                            </div>
-                            <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
-                        </div>
-                        <div class="swipe-action">
-                            <i class="fas fa-check text-white text-xl"></i>
-                        </div>
-                    </div>
-                    <div class="swipeable bg-surface haptic" onclick="completeHabit(this)">
-                        <div class="p-4 flex items-center gap-3">
-                            <div class="w-6 h-6 rounded-full border-2 border-success flex items-center justify-center">
-                                <i class="fas fa-check text-xs text-success" id="check-3"></i>
-                            </div>
-                            <div class="flex-1">
-                                <p class="text-white text-sm font-medium line-through opacity-50">Log Expenses</p>
-                                <p class="text-xs text-gray-500">Financial • Done</p>
-                            </div>
-                            <i class="fas fa-check text-success text-sm"></i>
-                        </div>
-                        <div class="swipe-action">
-                            <i class="fas fa-check text-white text-xl"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Streak Counter -->
-            <div class="bg-gradient-to-br from-orange-500/20 to-red-500/20 rounded-2xl p-5 border border-orange-500/30">
+            <!-- Streak -->
+            <div class="card bg-gradient-to-br from-orange-500/20 to-red-500/20 border-orange-500/30">
                 <div class="flex items-center gap-3">
                     <i class="fas fa-fire text-orange-500 text-2xl"></i>
                     <div>
@@ -483,478 +373,211 @@
         </div>
 
         <!-- MODES TAB -->
-        <div id="tab-modes" class="tab-content px-4 space-y-4">
-            <div class="pt-4 pb-2">
-                <h1 class="text-2xl font-bold text-white">Modes</h1>
-                <p class="text-sm text-gray-400">Activate focus zones</p>
-            </div>
+        <div id="tab-modes" class="tab-content">
+            <h1 class="text-2xl font-bold text-white mb-2">Modes</h1>
+            <p class="text-gray-400 text-sm mb-4">Activate focus zones</p>
 
-            <!-- Work Mode -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800 haptic" onclick="activateMode('work')">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-mental/20 flex items-center justify-center">
-                            <i class="fas fa-laptop-code text-mental text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-white font-bold">Work Mode</h3>
-                            <p class="text-xs text-gray-400">Deep focus session</p>
-                        </div>
+            <div class="card" onclick="activateMode('work')">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-mental/20 flex items-center justify-center">
+                        <i class="fas fa-laptop-code text-mental text-xl"></i>
                     </div>
-                    <span class="bg-mental/20 text-mental px-3 py-1 rounded-full text-xs font-bold">ACTIVE</span>
-                </div>
-                <p class="text-sm text-gray-400 mb-4">Blocks distracting sites and enables Pomodoro timer</p>
-                <div class="flex gap-2">
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">25 min focus</span>
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">5 min break</span>
+                    <div>
+                        <h3 class="text-white font-bold">Work Mode</h3>
+                        <p class="text-xs text-gray-400">Deep focus session</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Workout Mode -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800 haptic" onclick="activateMode('workout')">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-physical/20 flex items-center justify-center">
-                            <i class="fas fa-dumbbell text-physical text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-white font-bold">Workout Mode</h3>
-                            <p class="text-xs text-gray-400">Physical training zone</p>
-                        </div>
+            <div class="card" onclick="activateMode('workout')">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-physical/20 flex items-center justify-center">
+                        <i class="fas fa-dumbbell text-physical text-xl"></i>
                     </div>
-                </div>
-                <p class="text-sm text-gray-400 mb-4">Full-screen timer with music integration and heart rate tracking</p>
-                <div class="flex gap-2">
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">Spotify</span>
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">HR Monitor</span>
+                    <div>
+                        <h3 class="text-white font-bold">Workout Mode</h3>
+                        <p class="text-xs text-gray-400">Physical training</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Sleep Mode -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800 haptic" onclick="activateMode('sleep')">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                            <i class="fas fa-moon text-purple-500 text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-white font-bold">Sleep Mode</h3>
-                            <p class="text-xs text-gray-400">Wind down & rest</p>
-                        </div>
+            <div class="card" onclick="activateMode('sleep')">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                        <i class="fas fa-moon text-purple-500 text-xl"></i>
                     </div>
-                </div>
-                <p class="text-sm text-gray-400 mb-4">Triggers wind-down overlay and silences notifications</p>
-                <div class="flex gap-2">
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">10:00 PM</span>
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">6:30 AM</span>
-                </div>
-            </div>
-
-            <!-- Financial Mode -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800 haptic" onclick="activateMode('financial')">
-                <div class="flex items-start justify-between mb-3">
-                    <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-xl bg-financial/20 flex items-center justify-center">
-                            <i class="fas fa-coins text-financial text-xl"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-white font-bold">Financial Mode</h3>
-                            <p class="text-xs text-gray-400">Budget tracking</p>
-                        </div>
+                    <div>
+                        <h3 class="text-white font-bold">Sleep Mode</h3>
+                        <p class="text-xs text-gray-400">Wind down & rest</p>
                     </div>
-                </div>
-                <p class="text-sm text-gray-400 mb-4">Quick expense logging with receipt scanning</p>
-                <div class="flex gap-2">
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">OCR Scan</span>
-                    <span class="bg-bg px-3 py-1.5 rounded-lg text-xs text-gray-400">Budget Alert</span>
                 </div>
             </div>
         </div>
 
         <!-- WEALTH TAB -->
-        <div id="tab-wealth" class="tab-content px-4 space-y-4">
-            <div class="pt-4 pb-2">
-                <h1 class="text-2xl font-bold text-white">Wealth</h1>
-                <p class="text-sm text-gray-400">Track your finances</p>
-            </div>
+        <div id="tab-wealth" class="tab-content">
+            <h1 class="text-2xl font-bold text-white mb-2">Wealth</h1>
+            <p class="text-gray-400 text-sm mb-4">Track your finances</p>
 
-            <!-- Net Worth Card -->
-            <div class="bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-2xl p-6 border border-primary/30">
+            <div class="card bg-gradient-to-br from-primary/20 to-purple-500/20 border-primary/30">
                 <p class="text-sm text-gray-400 mb-1">Net Worth</p>
                 <h2 class="text-3xl font-bold text-white font-mono">$124,500</h2>
                 <p class="text-sm text-success mt-2"><i class="fas fa-arrow-up mr-1"></i>+$12,450 this month</p>
             </div>
 
-            <!-- Budget Rings -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800">
-                <h3 class="text-sm font-bold text-white mb-4">Budget Allocation</h3>
-                <div class="flex justify-around items-center">
-                    <div class="text-center">
-                        <div class="circular-progress mx-auto mb-2">
-                            <svg width="100" height="100">
-                                <circle class="progress-bg" cx="50" cy="50" r="42"></circle>
-                                <circle class="progress-bar" cx="50" cy="50" r="42" 
-                                    stroke-dasharray="264" 
-                                    stroke-dashoffset="66"
-                                    style="stroke: #FF6B6B"></circle>
-                            </svg>
+            <div class="card">
+                <h3 class="text-sm font-bold text-white mb-4">Recent Transactions</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-white text-sm">Whole Foods</p>
+                            <p class="text-xs text-gray-500">Food • Today</p>
                         </div>
-                        <p class="text-xs text-gray-400">Food</p>
-                        <p class="text-sm font-bold text-white font-mono">75%</p>
+                        <span class="text-white font-mono">-$124.50</span>
                     </div>
-                    <div class="text-center">
-                        <div class="circular-progress mx-auto mb-2">
-                            <svg width="100" height="100">
-                                <circle class="progress-bg" cx="50" cy="50" r="42"></circle>
-                                <circle class="progress-bar" cx="50" cy="50" r="42" 
-                                    stroke-dasharray="264" 
-                                    stroke-dashoffset="158"
-                                    style="stroke: #3B82F6"></circle>
-                            </svg>
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-white text-sm">Netflix</p>
+                            <p class="text-xs text-gray-500">Entertainment</p>
                         </div>
-                        <p class="text-xs text-gray-400">Rent</p>
-                        <p class="text-sm font-bold text-white font-mono">40%</p>
-                    </div>
-                    <div class="text-center">
-                        <div class="circular-progress mx-auto mb-2">
-                            <svg width="100" height="100">
-                                <circle class="progress-bg" cx="50" cy="50" r="42"></circle>
-                                <circle class="progress-bar" cx="50" cy="50" r="42" 
-                                    stroke-dasharray="264" 
-                                    stroke-dashoffset="211"
-                                    style="stroke: #10B981"></circle>
-                            </svg>
-                        </div>
-                        <p class="text-xs text-gray-400">Fun</p>
-                        <p class="text-sm font-bold text-white font-mono">20%</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Recent Transactions -->
-            <div class="bg-surface rounded-2xl border border-gray-800 overflow-hidden">
-                <div class="p-4 border-b border-gray-800 flex justify-between items-center">
-                    <h3 class="text-sm font-bold text-white">Recent Transactions</h3>
-                    <button onclick="showBottomSheet('expense')" class="text-primary text-sm font-medium">+ Add</button>
-                </div>
-                <div class="divide-y divide-gray-800">
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-orange-500/20 flex items-center justify-center">
-                                <i class="fas fa-shopping-cart text-orange-500"></i>
-                            </div>
-                            <div>
-                                <p class="text-white text-sm font-medium">Whole Foods</p>
-                                <p class="text-xs text-gray-500">Food • Today</p>
-                            </div>
-                        </div>
-                        <span class="text-white font-mono font-medium">-$124.50</span>
-                    </div>
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-purple-500/20 flex items-center justify-center">
-                                <i class="fas fa-film text-purple-500"></i>
-                            </div>
-                            <div>
-                                <p class="text-white text-sm font-medium">Netflix</p>
-                                <p class="text-xs text-gray-500">Entertainment • Yesterday</p>
-                            </div>
-                        </div>
-                        <span class="text-white font-mono font-medium">-$15.99</span>
-                    </div>
-                    <div class="p-4 flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
-                                <i class="fas fa-briefcase text-blue-500"></i>
-                            </div>
-                            <div>
-                                <p class="text-white text-sm font-medium">Freelance</p>
-                                <p class="text-xs text-gray-500">Income • Oct 21</p>
-                            </div>
-                        </div>
-                        <span class="text-success font-mono font-medium">+$850.00</span>
+                        <span class="text-white font-mono">-$15.99</span>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- ANALYTICS TAB -->
-        <div id="tab-analytics" class="tab-content px-4 space-y-4">
-            <div class="pt-4 pb-2">
-                <h1 class="text-2xl font-bold text-white">Analytics</h1>
-                <p class="text-sm text-gray-400">Track your progress</p>
-            </div>
+        <div id="tab-analytics" class="tab-content">
+            <h1 class="text-2xl font-bold text-white mb-2">Analytics</h1>
+            <p class="text-gray-400 text-sm mb-4">Track your progress</p>
 
-            <!-- Rank Badge -->
-            <div class="bg-surface rounded-2xl p-6 border border-gray-800 text-center">
-                <img src="icon-192.png" 
-                     class="w-32 h-32 mx-auto mb-4 drop-shadow-[0_0_20px_rgba(59,130,246,0.6)]"
-                     alt="Rank Badge">
+            <div class="card text-center">
+                <img src="icon-192.png" class="w-24 h-24 mx-auto mb-4">
                 <h2 class="text-xl font-bold text-white mb-1">Platinum Tier</h2>
                 <p class="text-sm text-gray-400 mb-4">Level 14 • Top 5%</p>
-                <div class="w-full bg-gray-800 rounded-full h-3 mb-2">
-                    <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-3 rounded-full" style="width: 82%"></div>
+                <div class="progress-bg mb-2">
+                    <div class="progress-fill bg-gradient-to-r from-blue-500 to-purple-500" style="width: 82%"></div>
                 </div>
                 <p class="text-xs text-gray-500">450 XP to Diamond Tier</p>
-            </div>
-
-            <!-- XP Breakdown -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800">
-                <h3 class="text-sm font-bold text-white mb-4">XP This Month</h3>
-                <div class="space-y-3">
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-physical/20 flex items-center justify-center">
-                                <i class="fas fa-dumbbell text-physical"></i>
-                            </div>
-                            <div>
-                                <p class="text-white text-sm font-medium">Physical</p>
-                                <p class="text-xs text-gray-500">Workouts, Sleep, Hygiene</p>
-                            </div>
-                        </div>
-                        <span class="text-white font-mono font-bold">1,250 XP</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-mental/20 flex items-center justify-center">
-                                <i class="fas fa-brain text-mental"></i>
-                            </div>
-                            <div>
-                                <p class="text-white text-sm font-medium">Mental</p>
-                                <p class="text-xs text-gray-500">Focus, Learning, Habits</p>
-                            </div>
-                        </div>
-                        <span class="text-white font-mono font-bold">980 XP</span>
-                    </div>
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center gap-3">
-                            <div class="w-10 h-10 rounded-lg bg-financial/20 flex items-center justify-center">
-                                <i class="fas fa-wallet text-financial"></i>
-                            </div>
-                            <div>
-                                <p class="text-white text-sm font-medium">Financial</p>
-                                <p class="text-xs text-gray-500">Budget, Savings, Debt</p>
-                            </div>
-                        </div>
-                        <span class="text-white font-mono font-bold">1,450 XP</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Weekly Activity -->
-            <div class="bg-surface rounded-2xl p-5 border border-gray-800">
-                <h3 class="text-sm font-bold text-white mb-4">Weekly Activity</h3>
-                <div class="flex justify-between items-end h-32">
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-8 bg-primary/30 rounded-t-lg" style="height: 60%"></div>
-                        <span class="text-xs text-gray-500">M</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-8 bg-primary/50 rounded-t-lg" style="height: 80%"></div>
-                        <span class="text-xs text-gray-500">T</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-8 bg-primary/40 rounded-t-lg" style="height: 70%"></div>
-                        <span class="text-xs text-gray-500">W</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-8 bg-primary rounded-t-lg" style="height: 95%"></div>
-                        <span class="text-xs text-gray-500">T</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-8 bg-primary/60 rounded-t-lg" style="height: 75%"></div>
-                        <span class="text-xs text-gray-500">F</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-8 bg-primary/30 rounded-t-lg" style="height: 50%"></div>
-                        <span class="text-xs text-gray-500">S</span>
-                    </div>
-                    <div class="flex flex-col items-center gap-2">
-                        <div class="w-8 bg-primary/20 rounded-t-lg" style="height: 40%"></div>
-                        <span class="text-xs text-gray-500">S</span>
-                    </div>
-                </div>
             </div>
         </div>
 
         <!-- PROFILE TAB -->
-        <div id="tab-profile" class="tab-content px-4 space-y-4">
-            <div class="pt-4 pb-2">
-                <h1 class="text-2xl font-bold text-white">Profile</h1>
-                <p class="text-sm text-gray-400">Settings & preferences</p>
-            </div>
+        <div id="tab-profile" class="tab-content">
+            <h1 class="text-2xl font-bold text-white mb-2">Profile</h1>
+            <p class="text-gray-400 text-sm mb-4">Settings & preferences</p>
 
-            <!-- Profile Card -->
-            <div class="bg-surface rounded-2xl p-6 border border-gray-800 text-center">
-                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-purple-500 mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-white">
-                    JD
-                </div>
+            <div class="card text-center">
+                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-purple-500 mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white">JD</div>
                 <h2 class="text-xl font-bold text-white mb-1">John Doe</h2>
-                <p class="text-sm text-gray-400 mb-4">john.doe@example.com</p>
-                <div class="flex justify-center gap-4">
-                    <div class="text-center">
-                        <p class="text-2xl font-bold text-white font-mono">14</p>
-                        <p class="text-xs text-gray-500">Level</p>
-                    </div>
-                    <div class="w-px bg-gray-700"></div>
-                    <div class="text-center">
-                        <p class="text-2xl font-bold text-white font-mono">3,680</p>
-                        <p class="text-xs text-gray-500">Total XP</p>
-                    </div>
-                    <div class="w-px bg-gray-700"></div>
-                    <div class="text-center">
-                        <p class="text-2xl font-bold text-white font-mono">14</p>
-                        <p class="text-xs text-gray-500">Streak</p>
-                    </div>
-                </div>
+                <p class="text-sm text-gray-400">john.doe@example.com</p>
             </div>
 
-            <!-- Settings Menu -->
-            <div class="bg-surface rounded-2xl border border-gray-800 overflow-hidden">
-                <div class="p-4 border-b border-gray-800">
-                    <h3 class="text-sm font-bold text-white">Settings</h3>
-                </div>
-                <div class="divide-y divide-gray-800">
-                    <button onclick="requestNotificationPermission()" class="w-full p-4 flex items-center justify-between haptic active:bg-surfaceHighlight transition-colors">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-bell text-gray-400"></i>
-                            <span class="text-white text-sm">Notifications</span>
-                        </div>
-                        <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
-                    </button>
-                    <button onclick="toggleDarkMode()" class="w-full p-4 flex items-center justify-between haptic active:bg-surfaceHighlight transition-colors">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-moon text-gray-400"></i>
-                            <span class="text-white text-sm">Dark Mode</span>
-                        </div>
-                        <div class="toggle-switch active" id="dark-mode-toggle"></div>
-                    </button>
-                    <button class="w-full p-4 flex items-center justify-between haptic active:bg-surfaceHighlight transition-colors">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-sync text-gray-400"></i>
-                            <span class="text-white text-sm">Sync with Web</span>
-                        </div>
-                        <span class="text-xs text-success">Connected</span>
-                    </button>
-                    <button class="w-full p-4 flex items-center justify-between haptic active:bg-surfaceHighlight transition-colors">
-                        <div class="flex items-center gap-3">
-                            <i class="fas fa-database text-gray-400"></i>
-                            <span class="text-white text-sm">Export Data</span>
-                        </div>
-                        <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
-                    </button>
-                </div>
+            <div class="card">
+                <h3 class="text-sm font-bold text-white mb-4">Settings</h3>
+                
+                <button onclick="requestNotificationPermission()" class="w-full py-4 flex justify-between items-center border-b border-gray-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-bell text-gray-400"></i>
+                        <span class="text-white text-sm">Notifications</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                </button>
+                
+                <button onclick="toggleDarkMode()" class="w-full py-4 flex justify-between items-center border-b border-gray-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-moon text-gray-400"></i>
+                        <span class="text-white text-sm">Dark Mode</span>
+                    </div>
+                    <div class="toggle active" id="dark-mode-toggle"></div>
+                </button>
+                
+                <button class="w-full py-4 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-database text-gray-400"></i>
+                        <span class="text-white text-sm">Export Data</span>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                </button>
             </div>
 
-            <!-- App Info -->
-            <div class="text-center py-4">
-                <p class="text-xs text-gray-600">Chronos Mobile v1.0.0</p>
-                <p class="text-xs text-gray-600 mt-1">Build 2026.03.31</p>
-            </div>
+            <p class="text-center text-xs text-gray-600 mt-4">Chronos Mobile v1.0.0</p>
         </div>
 
     </main>
 
-    <!-- Bottom Sheet Modal -->
-    <div id="bottom-sheet-overlay" class="fixed inset-0 bg-black/60 z-[1001] hidden" onclick="hideBottomSheet()"></div>
-    <div id="bottom-sheet" class="bottom-sheet fixed bottom-0 left-0 right-0 bg-surface rounded-t-3xl z-[1002] max-h-[80vh] overflow-y-auto">
-        <div class="p-4 border-b border-gray-800 flex items-center justify-between sticky top-0 bg-surface">
-            <h3 class="text-lg font-bold text-white" id="sheet-title">Action</h3>
-            <button onclick="hideBottomSheet()" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center haptic">
-                <i class="fas fa-times text-white"></i>
-            </button>
-        </div>
-        <div class="p-4" id="sheet-content">
-            <!-- Dynamic content -->
-        </div>
-    </div>
-
-    <!-- Bottom Navigation - FIXED -->
-    <nav class="bottom-nav" id="bottom-nav">
-        <button onclick="switchTab('dashboard')" class="nav-btn active" data-tab="dashboard">
+    <!-- BOTTOM NAVIGATION - GUARANTEED VISIBLE -->
+    <nav id="bottom-nav">
+        <button class="nav-btn active" onclick="switchTab('dashboard')" data-tab="dashboard">
             <i class="fas fa-home"></i>
             <span>Home</span>
         </button>
-        <button onclick="switchTab('modes')" class="nav-btn" data-tab="modes">
+        <button class="nav-btn" onclick="switchTab('modes')" data-tab="modes">
             <i class="fas fa-gamepad"></i>
             <span>Modes</span>
         </button>
-        <button onclick="switchTab('wealth')" class="nav-btn" data-tab="wealth">
+        <button class="nav-btn" onclick="switchTab('wealth')" data-tab="wealth">
             <i class="fas fa-coins"></i>
             <span>Wealth</span>
         </button>
-        <button onclick="switchTab('analytics')" class="nav-btn" data-tab="analytics">
+        <button class="nav-btn" onclick="switchTab('analytics')" data-tab="analytics">
             <i class="fas fa-chart-line"></i>
             <span>Progress</span>
         </button>
-        <button onclick="switchTab('profile')" class="nav-btn" data-tab="profile">
+        <button class="nav-btn" onclick="switchTab('profile')" data-tab="profile">
             <i class="fas fa-user"></i>
             <span>You</span>
         </button>
     </nav>
 
+    <!-- Bottom Sheet -->
+    <div id="bottom-sheet-overlay" onclick="hideBottomSheet()"></div>
+    <div id="bottom-sheet">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-bold text-white" id="sheet-title">Action</h3>
+            <button onclick="hideBottomSheet()" class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
+                <i class="fas fa-times text-white"></i>
+            </button>
+        </div>
+        <div id="sheet-content"></div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast">
+        <p class="font-bold text-sm text-white" id="toast-title">Notification</p>
+        <p class="text-xs text-gray-400" id="toast-body">Message</p>
+    </div>
+
     <script>
-        // Dark Mode Toggle - FIXED
+        // Dark Mode
         let isDarkMode = true;
         
         function toggleDarkMode() {
             isDarkMode = !isDarkMode;
-            const body = document.body;
-            const toggle = document.getElementById('dark-mode-toggle');
-            const themeMeta = document.getElementById('theme-color-meta');
-            
-            if (isDarkMode) {
-                body.classList.remove('light-mode');
-                toggle.classList.add('active');
-                themeMeta.setAttribute('content', '#0F1117');
-            } else {
-                body.classList.add('light-mode');
-                toggle.classList.remove('active');
-                themeMeta.setAttribute('content', '#F3F4F6');
-            }
-            
-            // Save preference
+            document.body.classList.toggle('light-mode', !isDarkMode);
+            document.getElementById('dark-mode-toggle').classList.toggle('active', isDarkMode);
+            document.getElementById('theme-color-meta').setAttribute('content', isDarkMode ? '#0F1117' : '#F3F4F6');
             localStorage.setItem('darkMode', isDarkMode);
-            
-            // Haptic feedback
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
+            showToast('Theme Changed', isDarkMode ? 'Dark mode enabled' : 'Light mode enabled');
         }
 
-        // Load saved preference
-        function loadDarkModePreference() {
+        function loadDarkMode() {
             const saved = localStorage.getItem('darkMode');
-            if (saved !== null) {
-                isDarkMode = saved === 'true';
-                if (!isDarkMode) {
-                    document.body.classList.add('light-mode');
-                    document.getElementById('dark-mode-toggle').classList.remove('active');
-                    document.getElementById('theme-color-meta').setAttribute('content', '#F3F4F6');
-                }
+            if (saved === 'false') {
+                toggleDarkMode();
             }
         }
 
-        // Tab Switching - FIXED
+        // Tab Switching
         function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.getElementById(`tab-${tabName}`).classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById('tab-' + tabName).classList.add('active');
             
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.tab === tabName) {
-                    btn.classList.add('active');
-                }
+                btn.classList.toggle('active', btn.dataset.tab === tabName);
             });
             
             document.getElementById('main-content').scrollTop = 0;
-            
-            // Haptic feedback
-            if (navigator.vibrate) {
-                navigator.vibrate(30);
-            }
         }
 
         // Bottom Sheet
@@ -964,170 +587,72 @@
             const title = document.getElementById('sheet-title');
             const content = document.getElementById('sheet-content');
             
-            overlay.classList.remove('hidden');
-            setTimeout(() => sheet.classList.add('open'), 10);
+            overlay.classList.add('show');
+            sheet.classList.add('show');
             
             if (type === 'expense') {
                 title.textContent = 'Log Expense';
                 content.innerHTML = `
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Amount</label>
-                            <div class="flex items-center bg-bg rounded-xl px-4 py-3 border border-gray-700">
-                                <span class="text-2xl text-gray-400 mr-2">$</span>
-                                <input type="number" id="expense-amount" class="flex-1 bg-transparent text-2xl text-white font-mono focus:outline-none" placeholder="0.00" autofocus>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Category</label>
-                            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-                                <button onclick="selectCategory(this)" class="category-btn px-4 py-2 rounded-lg bg-primary/20 text-primary border border-primary whitespace-nowrap">Food</button>
-                                <button onclick="selectCategory(this)" class="category-btn px-4 py-2 rounded-lg bg-bg text-gray-400 border border-gray-700 whitespace-nowrap">Transport</button>
-                                <button onclick="selectCategory(this)" class="category-btn px-4 py-2 rounded-lg bg-bg text-gray-400 border border-gray-700 whitespace-nowrap">Entertainment</button>
-                                <button onclick="selectCategory(this)" class="category-btn px-4 py-2 rounded-lg bg-bg text-gray-400 border border-gray-700 whitespace-nowrap">Shopping</button>
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">Description</label>
-                            <input type="text" class="w-full bg-bg rounded-xl px-4 py-3 border border-gray-700 text-white focus:outline-none focus:border-primary" placeholder="What was this for?">
-                        </div>
-                        <button onclick="addExpense()" class="w-full bg-primary hover:bg-blue-600 text-white font-bold py-4 rounded-xl haptic transition-colors">
-                            Save Expense
-                        </button>
-                    </div>
+                    <input type="number" id="expense-amount" class="w-full bg-[#0F1117] border border-gray-700 rounded-xl px-4 py-3 text-white text-2xl mb-4" placeholder="$0.00" autofocus>
+                    <button onclick="addExpense()" class="w-full bg-primary text-white font-bold py-4 rounded-xl">Save</button>
                 `;
             } else if (type === 'habit') {
                 title.textContent = 'Complete Habit';
                 content.innerHTML = `
-                    <div class="space-y-3">
-                        <button onclick="completeQuickHabit('Morning Meditation')" class="w-full p-4 bg-bg rounded-xl border border-gray-800 flex items-center gap-3 haptic active:scale-95 transition-transform">
-                            <div class="w-10 h-10 rounded-full bg-physical/20 flex items-center justify-center">
-                                <i class="fas fa-spa text-physical"></i>
-                            </div>
-                            <div class="flex-1 text-left">
-                                <p class="text-white font-medium">Morning Meditation</p>
-                                <p class="text-xs text-gray-500">Physical • 10 min</p>
-                            </div>
-                            <i class="fas fa-check text-success"></i>
-                        </button>
-                        <button onclick="completeQuickHabit('Read 20 Pages')" class="w-full p-4 bg-bg rounded-xl border border-gray-800 flex items-center gap-3 haptic active:scale-95 transition-transform">
-                            <div class="w-10 h-10 rounded-full bg-mental/20 flex items-center justify-center">
-                                <i class="fas fa-book text-mental"></i>
-                            </div>
-                            <div class="flex-1 text-left">
-                                <p class="text-white font-medium">Read 20 Pages</p>
-                                <p class="text-xs text-gray-500">Mental • Daily</p>
-                            </div>
-                            <i class="fas fa-check text-success"></i>
-                        </button>
-                        <button onclick="completeQuickHabit('Evening Walk')" class="w-full p-4 bg-bg rounded-xl border border-gray-800 flex items-center gap-3 haptic active:scale-95 transition-transform">
-                            <div class="w-10 h-10 rounded-full bg-physical/20 flex items-center justify-center">
-                                <i class="fas fa-walking text-physical"></i>
-                            </div>
-                            <div class="flex-1 text-left">
-                                <p class="text-white font-medium">Evening Walk</p>
-                                <p class="text-xs text-gray-500">Physical • 30 min</p>
-                            </div>
-                            <i class="fas fa-check text-success"></i>
-                        </button>
-                    </div>
+                    <button onclick="completeHabit('Meditation')" class="w-full btn mb-3">
+                        <span class="text-white">Morning Meditation</span>
+                    </button>
+                    <button onclick="completeHabit('Reading')" class="w-full btn">
+                        <span class="text-white">Read 20 Pages</span>
+                    </button>
                 `;
             }
         }
 
         function hideBottomSheet() {
-            const overlay = document.getElementById('bottom-sheet-overlay');
-            const sheet = document.getElementById('bottom-sheet');
-            sheet.classList.remove('open');
-            setTimeout(() => overlay.classList.add('hidden'), 300);
-        }
-
-        function selectCategory(btn) {
-            document.querySelectorAll('.category-btn').forEach(b => {
-                b.classList.remove('bg-primary/20', 'text-primary', 'border-primary');
-                b.classList.add('bg-bg', 'text-gray-400', 'border-gray-700');
-            });
-            btn.classList.remove('bg-bg', 'text-gray-400', 'border-gray-700');
-            btn.classList.add('bg-primary/20', 'text-primary', 'border-primary');
+            document.getElementById('bottom-sheet-overlay').classList.remove('show');
+            document.getElementById('bottom-sheet').classList.remove('show');
         }
 
         function addExpense() {
             const amount = document.getElementById('expense-amount').value;
             if (amount) {
-                showNotification('Expense Logged', `$${amount} added to your transactions`);
+                showToast('Expense Logged', '$' + amount + ' added');
                 triggerConfetti();
                 hideBottomSheet();
             }
         }
 
-        function completeQuickHabit(habit) {
-            showNotification('Habit Complete!', `${habit} completed. +50 XP`);
+        function completeHabit(name) {
+            showToast('Habit Complete!', name + ' completed. +50 XP');
             triggerConfetti();
             hideBottomSheet();
-        }
-
-        // Habit Completion
-        function completeHabit(element) {
-            const checkIcon = element.querySelector('.fa-check');
-            const isCompleted = checkIcon.classList.contains('text-success');
-            
-            if (!isCompleted) {
-                checkIcon.classList.remove('text-transparent');
-                checkIcon.classList.add('text-success');
-                element.querySelector('.border-2').classList.add('border-success');
-                element.querySelector('.border-2').classList.remove('border-gray-600');
-                showNotification('Habit Complete!', '+50 XP earned');
-                triggerConfetti();
-            }
         }
 
         // Mode Activation
         function activateMode(mode) {
             const banner = document.getElementById('active-mode-banner');
-            const modeNames = {
-                'work': 'Work Mode',
-                'workout': 'Workout Mode',
-                'sleep': 'Sleep Mode',
-                'financial': 'Financial Mode'
-            };
-            
-            banner.classList.remove('hidden');
-            document.getElementById('mode-name').textContent = modeNames[mode];
-            
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-            
-            showNotification('Mode Activated', `${modeNames[mode]} is now active`);
+            const names = { work: 'Work Mode', workout: 'Workout Mode', sleep: 'Sleep Mode' };
+            banner.classList.add('show');
+            document.getElementById('mode-name').textContent = names[mode];
+            showToast('Mode Activated', names[mode] + ' is now active');
         }
 
         function endActiveMode() {
-            document.getElementById('active-mode-banner').classList.add('hidden');
-            showNotification('Mode Ended', 'Focus session completed');
+            document.getElementById('active-mode-banner').classList.remove('show');
+            showToast('Mode Ended', 'Focus session completed');
         }
 
-        // Notifications
-        function showNotification(title, body) {
-            const toast = document.createElement('div');
-            toast.className = 'fixed top-20 left-4 right-4 bg-surface border border-primary text-white px-4 py-3 rounded-xl shadow-2xl z-[1003] transform -translate-y-full transition-transform duration-300';
-            toast.innerHTML = `
-                <p class="font-bold text-sm">${title}</p>
-                <p class="text-xs text-gray-400">${body}</p>
-            `;
-            document.body.appendChild(toast);
-            
-            setTimeout(() => toast.classList.remove('-translate-y-full'), 100);
-            setTimeout(() => {
-                toast.classList.add('-translate-y-full');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-            
-            if ('Notification' in window && Notification.permission === 'granted') {
-                new Notification(title, { body, icon: 'icon-192.png' });
-            }
+        // Toast Notification
+        function showToast(title, body) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-title').textContent = title;
+            document.getElementById('toast-body').textContent = body;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Confetti Effect
+        // Confetti
         function triggerConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
@@ -1135,7 +660,7 @@
             canvas.height = window.innerHeight;
             
             const particles = [];
-            const colors = ['#3B82F6', '#10B981', '#FF6B6B', '#F59E0B', '#8B5CF6'];
+            const colors = ['#3B82F6', '#10B981', '#FF6B6B', '#F59E0B'];
             
             for (let i = 0; i < 100; i++) {
                 particles.push({
@@ -1152,7 +677,6 @@
             function animate() {
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 let active = false;
-                
                 particles.forEach(p => {
                     if (p.life > 0) {
                         active = true;
@@ -1160,34 +684,26 @@
                         p.y += p.vy;
                         p.vy += 0.5;
                         p.life -= 0.02;
-                        
                         ctx.fillStyle = p.color;
                         ctx.globalAlpha = p.life;
                         ctx.fillRect(p.x, p.y, p.size, p.size);
                     }
                 });
-                
-                if (active) {
-                    requestAnimationFrame(animate);
-                } else {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                }
+                if (active) requestAnimationFrame(animate);
             }
-            
             animate();
         }
 
-        // Request Notification Permission
+        // Notifications
         function requestNotificationPermission() {
-            if ('Notification' in window && Notification.permission === 'default') {
+            if ('Notification' in window) {
                 Notification.requestPermission();
             }
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            loadDarkModePreference();
-            requestNotificationPermission();
+            loadDarkMode();
             
             const hour = new Date().getHours();
             const greeting = document.getElementById('greeting');
@@ -1195,23 +711,12 @@
             else if (hour < 18) greeting.textContent = 'Good Afternoon';
             else greeting.textContent = 'Good Evening';
         });
-
-        // Prevent pull-to-refresh on mobile
-        document.body.addEventListener('touchstart', function(e) {
-            if (e.target == document.body) {
-                e.preventDefault();
-            }
-        }, { passive: false });
     </script>
 
-    <!-- Service Worker Registration -->
+    <!-- Service Worker -->
     <script>
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then((reg) => console.log('✅ Service Worker registered'))
-                    .catch((err) => console.log('❌ Service Worker registration failed:', err));
-            });
+            navigator.serviceWorker.register('./sw.js').catch(console.error);
         }
     </script>
 </body>
