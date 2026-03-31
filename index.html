@@ -141,6 +141,7 @@
             width: 50px; height: 28px;
             background: #374151; border-radius: 14px;
             position: relative; cursor: pointer;
+            transition: background 0.3s;
         }
         .toggle.active { background: #3B82F6; }
         .toggle::after {
@@ -150,6 +151,7 @@
             transition: transform 0.3s;
         }
         .toggle.active::after { transform: translateX(22px); }
+        .toggle.disabled { opacity: 0.5; cursor: not-allowed; }
         
         /* Confetti */
         #confetti-canvas {
@@ -190,6 +192,99 @@
             margin: 0; padding-left: 20px;
         }
         .install-instructions li { margin-bottom: 4px; }
+
+        /* Stats Display */
+        .stat-box {
+            background: #252932;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            flex: 1;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3B82F6;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #9CA3AF;
+            margin-top: 4px;
+        }
+
+        /* Habit Item */
+        .habit-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background: #252932;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        .habit-item.completed {
+            opacity: 0.5;
+        }
+        .habit-item.completed .habit-check {
+            background: #22C55E;
+            border-color: #22C55E;
+        }
+        .habit-check {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #6B7280;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            cursor: pointer;
+        }
+        .habit-check i {
+            font-size: 12px;
+            color: white;
+            display: none;
+        }
+        .habit-item.completed .habit-check i {
+            display: block;
+        }
+
+        /* Export Button */
+        .export-btn {
+            background: #252932;
+            color: white;
+            border: 1px solid #374151;
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .export-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Reset Data Button */
+        .reset-btn {
+            background: #EF4444;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 16px;
+            width: 100%;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 16px;
+        }
+        .reset-btn:active {
+            transform: scale(0.98);
+        }
     </style>
 </head>
 <body>
@@ -217,10 +312,10 @@
         <div id="tab-dashboard" class="tab-content active">
             <div class="mb-4">
                 <p class="text-gray-400 text-sm" id="greeting">Good Morning</p>
-                <h1 class="text-2xl font-bold text-white">John Doe</h1>
+                <h1 class="text-2xl font-bold text-white" id="user-name">New User</h1>
                 <div class="flex items-center gap-2 mt-2">
-                    <img src="icon-192.png" class="w-8 h-8 rounded-full">
-                    <span class="text-sm text-primary">Platinum Tier • Level 14</span>
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-primary to-purple-500 flex items-center justify-center text-sm font-bold">NU</div>
+                    <span class="text-sm text-primary" id="user-rank">Bronze Tier • Level 1</span>
                 </div>
             </div>
 
@@ -231,25 +326,25 @@
                 <div class="mb-4">
                     <div class="flex justify-between mb-2">
                         <span class="text-sm"><i class="fas fa-dumbbell text-physical mr-2"></i>Physical</span>
-                        <span class="text-sm font-mono">75%</span>
+                        <span class="text-sm font-mono" id="physical-percent">0%</span>
                     </div>
-                    <div class="progress-bg"><div class="progress-fill bg-[#FF6B6B]" style="width: 75%"></div></div>
+                    <div class="progress-bg"><div class="progress-fill bg-[#FF6B6B]" id="physical-bar" style="width: 0%"></div></div>
                 </div>
 
                 <div class="mb-4">
                     <div class="flex justify-between mb-2">
                         <span class="text-sm"><i class="fas fa-brain text-mental mr-2"></i>Mental</span>
-                        <span class="text-sm font-mono">45%</span>
+                        <span class="text-sm font-mono" id="mental-percent">0%</span>
                     </div>
-                    <div class="progress-bg"><div class="progress-fill bg-[#3B82F6]" style="width: 45%"></div></div>
+                    <div class="progress-bg"><div class="progress-fill bg-[#3B82F6]" id="mental-bar" style="width: 0%"></div></div>
                 </div>
 
                 <div>
                     <div class="flex justify-between mb-2">
                         <span class="text-sm"><i class="fas fa-wallet text-financial mr-2"></i>Financial</span>
-                        <span class="text-sm font-mono">90%</span>
+                        <span class="text-sm font-mono" id="financial-percent">0%</span>
                     </div>
-                    <div class="progress-bg"><div class="progress-fill bg-[#10B981]" style="width: 90%"></div></div>
+                    <div class="progress-bg"><div class="progress-fill bg-[#10B981]" id="financial-bar" style="width: 0%"></div></div>
                 </div>
             </div>
 
@@ -278,8 +373,42 @@
                 <div class="flex items-center gap-3">
                     <i class="fas fa-fire text-orange-500 text-2xl"></i>
                     <div>
-                        <p class="text-2xl font-bold text-white font-mono">14 Days</p>
+                        <p class="text-2xl font-bold text-white font-mono" id="streak-days">0 Days</p>
                         <p class="text-xs text-gray-400">Current Streak</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Today's Habits -->
+            <div class="card">
+                <h2 class="text-sm font-bold text-white mb-4">Today's Habits</h2>
+                <div id="habits-container">
+                    <div class="habit-item" onclick="toggleHabit(this, 'physical')">
+                        <div class="flex items-center">
+                            <div class="habit-check"><i class="fas fa-check"></i></div>
+                            <div>
+                                <p class="text-white text-sm">Morning Meditation</p>
+                                <p class="text-xs text-gray-500">Physical • 10 min</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="habit-item" onclick="toggleHabit(this, 'mental')">
+                        <div class="flex items-center">
+                            <div class="habit-check"><i class="fas fa-check"></i></div>
+                            <div>
+                                <p class="text-white text-sm">Read 20 Pages</p>
+                                <p class="text-xs text-gray-500">Mental • Daily</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="habit-item" onclick="toggleHabit(this, 'financial')">
+                        <div class="flex items-center">
+                            <div class="habit-check"><i class="fas fa-check"></i></div>
+                            <div>
+                                <p class="text-white text-sm">Log Expenses</p>
+                                <p class="text-xs text-gray-500">Financial • Daily</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -334,27 +463,14 @@
 
             <div class="card bg-gradient-to-br from-primary/20 to-purple-500/20 border-primary/30">
                 <p class="text-sm text-gray-400 mb-1">Net Worth</p>
-                <h2 class="text-3xl font-bold text-white font-mono">$124,500</h2>
-                <p class="text-sm text-success mt-2"><i class="fas fa-arrow-up mr-1"></i>+$12,450 this month</p>
+                <h2 class="text-3xl font-bold text-white font-mono" id="net-worth">$0</h2>
+                <p class="text-sm text-success mt-2" id="monthly-change"><i class="fas fa-arrow-up mr-1"></i>+$0 this month</p>
             </div>
 
             <div class="card">
                 <h3 class="text-sm font-bold text-white mb-4">Recent Transactions</h3>
-                <div class="space-y-3">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-white text-sm">Whole Foods</p>
-                            <p class="text-xs text-gray-500">Food • Today</p>
-                        </div>
-                        <span class="text-white font-mono">-$124.50</span>
-                    </div>
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-white text-sm">Netflix</p>
-                            <p class="text-xs text-gray-500">Entertainment</p>
-                        </div>
-                        <span class="text-white font-mono">-$15.99</span>
-                    </div>
+                <div id="transactions-container" class="space-y-3">
+                    <p class="text-gray-500 text-sm text-center py-4">No transactions yet</p>
                 </div>
             </div>
         </div>
@@ -365,13 +481,32 @@
             <p class="text-gray-400 text-sm mb-4">Track your progress</p>
 
             <div class="card text-center">
-                <img src="icon-192.png" class="w-24 h-24 mx-auto mb-4">
-                <h2 class="text-xl font-bold text-white mb-1">Platinum Tier</h2>
-                <p class="text-sm text-gray-400 mb-4">Level 14 • Top 5%</p>
+                <div class="w-24 h-24 rounded-full bg-gradient-to-tr from-primary to-purple-500 mx-auto mb-4 flex items-center justify-center text-3xl font-bold text-white" id="rank-badge">1</div>
+                <h2 class="text-xl font-bold text-white mb-1" id="rank-name">Bronze Tier</h2>
+                <p class="text-sm text-gray-400 mb-4" id="rank-progress">Level 1 • 0 XP</p>
                 <div class="progress-bg mb-2">
-                    <div class="progress-fill bg-gradient-to-r from-blue-500 to-purple-500" style="width: 82%"></div>
+                    <div class="progress-fill bg-gradient-to-r from-blue-500 to-purple-500" id="xp-bar" style="width: 0%"></div>
                 </div>
-                <p class="text-xs text-gray-500">450 XP to Diamond Tier</p>
+                <p class="text-xs text-gray-500" id="xp-to-next">100 XP to Level 2</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="card">
+                <h3 class="text-sm font-bold text-white mb-4">Your Stats</h3>
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="stat-box">
+                        <div class="stat-value" id="total-xp">0</div>
+                        <div class="stat-label">Total XP</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="habits-completed">0</div>
+                        <div class="stat-label">Habits Done</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="days-active">0</div>
+                        <div class="stat-label">Days Active</div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -380,7 +515,7 @@
             <h1 class="text-2xl font-bold text-white mb-2">Profile</h1>
             <p class="text-gray-400 text-sm mb-4">Settings & preferences</p>
 
-            <!-- INSTALL BUTTON (NEW) -->
+            <!-- INSTALL BUTTON -->
             <button id="install-btn" onclick="installApp()">
                 <i class="fas fa-download mr-2"></i> Install Chronos App
             </button>
@@ -396,22 +531,24 @@
             </div>
 
             <div class="card text-center">
-                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-purple-500 mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white">JD</div>
-                <h2 class="text-xl font-bold text-white mb-1">John Doe</h2>
-                <p class="text-sm text-gray-400">john.doe@example.com</p>
+                <div class="w-20 h-20 rounded-full bg-gradient-to-tr from-primary to-purple-500 mx-auto mb-4 flex items-center justify-center text-2xl font-bold text-white" id="profile-initials">NU</div>
+                <h2 class="text-xl font-bold text-white mb-1" id="profile-name">New User</h2>
+                <p class="text-sm text-gray-400">Started Today</p>
             </div>
 
             <div class="card">
                 <h3 class="text-sm font-bold text-white mb-4">Settings</h3>
                 
-                <button onclick="requestNotificationPermission()" class="w-full py-4 flex justify-between items-center border-b border-gray-800">
+                <!-- Notifications Toggle (WORKING) -->
+                <button onclick="toggleNotifications()" class="w-full py-4 flex justify-between items-center border-b border-gray-800">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-bell text-gray-400"></i>
+                        <i class="fas fa-bell text-gray-400" id="notif-icon"></i>
                         <span class="text-white text-sm">Notifications</span>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                    <div class="toggle" id="notif-toggle"></div>
                 </button>
                 
+                <!-- Dark Mode Toggle (WORKING) -->
                 <button onclick="toggleDarkMode()" class="w-full py-4 flex justify-between items-center border-b border-gray-800">
                     <div class="flex items-center gap-3">
                         <i class="fas fa-moon text-gray-400"></i>
@@ -419,15 +556,26 @@
                     </div>
                     <div class="toggle active" id="dark-mode-toggle"></div>
                 </button>
+
+                <!-- Export Data (WORKING) -->
+                <button onclick="exportData()" class="export-btn">
+                    <i class="fas fa-download"></i>
+                    Export My Data
+                </button>
                 
                 <button class="w-full py-4 flex justify-between items-center">
                     <div class="flex items-center gap-3">
-                        <i class="fas fa-database text-gray-400"></i>
-                        <span class="text-white text-sm">Export Data</span>
+                        <i class="fas fa-info-circle text-gray-400"></i>
+                        <span class="text-white text-sm">App Version</span>
                     </div>
-                    <i class="fas fa-chevron-right text-gray-600 text-xs"></i>
+                    <span class="text-gray-500 text-xs">v1.0.0</span>
                 </button>
             </div>
+
+            <!-- Reset Data -->
+            <button onclick="resetAllData()" class="reset-btn">
+                <i class="fas fa-trash mr-2"></i> Reset All Data
+            </button>
 
             <p class="text-center text-xs text-gray-600 mt-4">Chronos Mobile v1.0.0</p>
         </div>
@@ -477,28 +625,336 @@
     </div>
 
     <script>
-        // PWA Install Logic
+        // ============================================
+        // USER DATA STORE (All stats start at ZERO)
+        // ============================================
+        let userData = {
+            profile: {
+                name: 'New User',
+                initials: 'NU',
+                joinDate: new Date().toISOString(),
+                level: 1,
+                xp: 0,
+                rank: 'Bronze Tier'
+            },
+            stats: {
+                physical: 0,
+                mental: 0,
+                financial: 0,
+                streak: 0,
+                habitsCompleted: 0,
+                daysActive: 0,
+                lastActive: null
+            },
+            habits: [],
+            transactions: [],
+            settings: {
+                notifications: false,
+                darkMode: true
+            }
+        };
+
+        // Load or Initialize Data
+        function loadUserData() {
+            const saved = localStorage.getItem('chronosUserData');
+            if (saved) {
+                userData = JSON.parse(saved);
+            } else {
+                // NEW USER - All stats start at ZERO
+                saveUserData();
+            }
+            updateUI();
+        }
+
+        // Save Data to LocalStorage
+        function saveUserData() {
+            localStorage.setItem('chronosUserData', JSON.stringify(userData));
+        }
+
+        // Reset All Data (Back to Zero)
+        function resetAllData() {
+            if (confirm('Are you sure? This will delete all your progress and reset stats to zero.')) {
+                localStorage.removeItem('chronosUserData');
+                userData = {
+                    profile: {
+                        name: 'New User',
+                        initials: 'NU',
+                        joinDate: new Date().toISOString(),
+                        level: 1,
+                        xp: 0,
+                        rank: 'Bronze Tier'
+                    },
+                    stats: {
+                        physical: 0,
+                        mental: 0,
+                        financial: 0,
+                        streak: 0,
+                        habitsCompleted: 0,
+                        daysActive: 0,
+                        lastActive: null
+                    },
+                    habits: [],
+                    transactions: [],
+                    settings: {
+                        notifications: false,
+                        darkMode: true
+                    }
+                };
+                saveUserData();
+                updateUI();
+                showToast('Data Reset', 'All stats reset to zero');
+                triggerConfetti();
+            }
+        }
+
+        // Update UI with Current Data
+        function updateUI() {
+            // Profile
+            document.getElementById('user-name').textContent = userData.profile.name;
+            document.getElementById('profile-name').textContent = userData.profile.name;
+            document.getElementById('profile-initials').textContent = userData.profile.initials;
+            document.getElementById('user-rank').textContent = `${userData.profile.rank} • Level ${userData.profile.level}`;
+            document.getElementById('rank-name').textContent = userData.profile.rank;
+            document.getElementById('rank-progress').textContent = `Level ${userData.profile.level} • ${userData.profile.xp} XP`;
+            document.getElementById('rank-badge').textContent = userData.profile.level;
+            
+            // XP Progress
+            const xpToNext = userData.profile.level * 100;
+            const xpPercent = (userData.profile.xp / xpToNext) * 100;
+            document.getElementById('xp-bar').style.width = `${Math.min(xpPercent, 100)}%`;
+            document.getElementById('xp-to-next').textContent = `${xpToNext - userData.profile.xp} XP to Level ${userData.profile.level + 1}`;
+            
+            // Stats
+            document.getElementById('total-xp').textContent = userData.profile.xp.toLocaleString();
+            document.getElementById('habits-completed').textContent = userData.stats.habitsCompleted;
+            document.getElementById('days-active').textContent = userData.stats.daysActive;
+            document.getElementById('streak-days').textContent = `${userData.stats.streak} Days`;
+            
+            // Pillars
+            const physicalPercent = Math.min((userData.stats.physical / 3) * 100, 100);
+            const mentalPercent = Math.min((userData.stats.mental / 3) * 100, 100);
+            const financialPercent = Math.min((userData.stats.financial / 3) * 100, 100);
+            
+            document.getElementById('physical-percent').textContent = `${Math.round(physicalPercent)}%`;
+            document.getElementById('mental-percent').textContent = `${Math.round(mentalPercent)}%`;
+            document.getElementById('financial-percent').textContent = `${Math.round(financialPercent)}%`;
+            
+            document.getElementById('physical-bar').style.width = `${physicalPercent}%`;
+            document.getElementById('mental-bar').style.width = `${mentalPercent}%`;
+            document.getElementById('financial-bar').style.width = `${financialPercent}%`;
+            
+            // Wealth
+            const totalExpenses = userData.transactions.filter(t => t.amount < 0).reduce((sum, t) => sum + Math.abs(t.amount), 0);
+            const totalIncome = userData.transactions.filter(t => t.amount > 0).reduce((sum, t) => sum + t.amount, 0);
+            document.getElementById('net-worth').textContent = `$${(totalIncome - totalExpenses).toLocaleString()}`;
+            document.getElementById('monthly-change').innerHTML = `<i class="fas fa-arrow-up mr-1"></i>+$${totalIncome.toLocaleString()} this month`;
+            
+            // Transactions
+            const transactionsContainer = document.getElementById('transactions-container');
+            if (userData.transactions.length === 0) {
+                transactionsContainer.innerHTML = '<p class="text-gray-500 text-sm text-center py-4">No transactions yet</p>';
+            } else {
+                transactionsContainer.innerHTML = userData.transactions.slice(-5).reverse().map(t => `
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-white text-sm">${t.description}</p>
+                            <p class="text-xs text-gray-500">${t.category} • ${new Date(t.date).toLocaleDateString()}</p>
+                        </div>
+                        <span class="text-white font-mono ${t.amount > 0 ? 'text-success' : ''}">${t.amount > 0 ? '+' : ''}$${Math.abs(t.amount).toFixed(2)}</span>
+                    </div>
+                `).join('');
+            }
+            
+            // Settings Toggles
+            document.getElementById('notif-toggle').classList.toggle('active', userData.settings.notifications);
+            document.getElementById('notif-icon').className = userData.settings.notifications ? 'fas fa-bell text-primary' : 'fas fa-bell text-gray-400';
+        }
+
+        // ============================================
+        // NOTIFICATIONS (WORKING TOGGLE)
+        // ============================================
+        async function toggleNotifications() {
+            const isEnabled = !userData.settings.notifications;
+            
+            if (isEnabled) {
+                // Request permission
+                if ('Notification' in window) {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'granted') {
+                        userData.settings.notifications = true;
+                        saveUserData();
+                        updateUI();
+                        showToast('Notifications Enabled', 'You will receive reminders');
+                        sendTestNotification();
+                    } else {
+                        showToast('Permission Denied', 'Notifications cannot be enabled');
+                    }
+                } else {
+                    showToast('Not Supported', 'Your browser does not support notifications');
+                }
+            } else {
+                userData.settings.notifications = false;
+                saveUserData();
+                updateUI();
+                showToast('Notifications Disabled', 'You will no longer receive reminders');
+            }
+        }
+
+        function sendTestNotification() {
+            if (userData.settings.notifications && 'Notification' in window && Notification.permission === 'granted') {
+                new Notification('Chronos Mobile', {
+                    body: 'Notifications are now enabled! You will receive habit reminders.',
+                    icon: 'icon-192.png'
+                });
+            }
+        }
+
+        function sendNotification(title, body) {
+            if (userData.settings.notifications && 'Notification' in window && Notification.permission === 'granted') {
+                new Notification(title, {
+                    body: body,
+                    icon: 'icon-192.png'
+                });
+            }
+        }
+
+        // ============================================
+        // DARK MODE (WORKING TOGGLE)
+        // ============================================
+        function toggleDarkMode() {
+            userData.settings.darkMode = !userData.settings.darkMode;
+            document.body.classList.toggle('light-mode', !userData.settings.darkMode);
+            document.getElementById('dark-mode-toggle').classList.toggle('active', userData.settings.darkMode);
+            document.getElementById('theme-color-meta').setAttribute('content', userData.settings.darkMode ? '#0F1117' : '#F3F4F6');
+            saveUserData();
+            showToast('Theme Changed', userData.settings.darkMode ? 'Dark mode enabled' : 'Light mode enabled');
+        }
+
+        // ============================================
+        // EXPORT DATA (WORKING)
+        // ============================================
+        function exportData() {
+            const exportData = {
+                exportDate: new Date().toISOString(),
+                version: '1.0.0',
+                profile: userData.profile,
+                stats: userData.stats,
+                habits: userData.habits,
+                transactions: userData.transactions,
+                totalXP: userData.profile.xp,
+                totalHabitsCompleted: userData.stats.habitsCompleted,
+                accountAge: Math.floor((new Date() - new Date(userData.profile.joinDate)) / (1000 * 60 * 60 * 24)) + ' days'
+            };
+            
+            // Create JSON file
+            const dataStr = JSON.stringify(exportData, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            
+            // Create download link
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `chronos-data-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('Data Exported', 'Your data has been downloaded');
+        }
+
+        // ============================================
+        // HABIT TRACKING
+        // ============================================
+        function toggleHabit(element, pillar) {
+            const isCompleted = element.classList.contains('completed');
+            
+            if (!isCompleted) {
+                element.classList.add('completed');
+                userData.stats[pillar]++;
+                userData.stats.habitsCompleted++;
+                addXP(50);
+                checkDayComplete();
+                saveUserData();
+                updateUI();
+                showToast('Habit Complete!', '+50 XP earned');
+                triggerConfetti();
+                sendNotification('Habit Complete!', 'Great job staying on track!');
+            }
+        }
+
+        function checkDayComplete() {
+            const today = new Date().toDateString();
+            if (userData.stats.lastActive !== today) {
+                userData.stats.daysActive++;
+                userData.stats.streak++;
+                userData.stats.lastActive = today;
+                saveUserData();
+            }
+        }
+
+        function addXP(amount) {
+            userData.profile.xp += amount;
+            
+            // Level up check
+            const xpNeeded = userData.profile.level * 100;
+            if (userData.profile.xp >= xpNeeded) {
+                userData.profile.level++;
+                userData.profile.xp = userData.profile.xp - xpNeeded;
+                
+                // Rank progression
+                if (userData.profile.level >= 5) userData.profile.rank = 'Silver Tier';
+                if (userData.profile.level >= 10) userData.profile.rank = 'Gold Tier';
+                if (userData.profile.level >= 15) userData.profile.rank = 'Platinum Tier';
+                if (userData.profile.level >= 20) userData.profile.rank = 'Diamond Tier';
+                
+                showToast('Level Up!', `Welcome to Level ${userData.profile.level}!`);
+                triggerConfetti();
+            }
+        }
+
+        // ============================================
+        // EXPENSE TRACKING
+        // ============================================
+        function addExpense() {
+            const amount = parseFloat(document.getElementById('expense-amount').value);
+            const category = document.querySelector('.category-btn.bg-primary\\/20')?.textContent || 'Other';
+            
+            if (amount) {
+                userData.transactions.push({
+                    amount: -amount,
+                    category: category,
+                    description: 'Manual Entry',
+                    date: new Date().toISOString()
+                });
+                userData.stats.financial++;
+                addXP(10);
+                saveUserData();
+                updateUI();
+                showToast('Expense Logged', `$${amount} added to transactions`);
+                triggerConfetti();
+                hideBottomSheet();
+            }
+        }
+
+        // ============================================
+        // PWA INSTALL
+        // ============================================
         let deferredPrompt;
         const installBtn = document.getElementById('install-btn');
         const installInstructions = document.getElementById('install-instructions');
 
-        // Listen for install prompt (Android)
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             installBtn.classList.add('show');
-            console.log('✅ Install prompt available');
         });
 
-        // Detect iOS (show instructions instead)
         function isIOS() {
             return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         }
 
-        // Install App Function
         function installApp() {
             if (deferredPrompt) {
-                // Android - trigger install
                 deferredPrompt.prompt();
                 deferredPrompt.userChoice.then((choiceResult) => {
                     if (choiceResult.outcome === 'accepted') {
@@ -509,45 +965,14 @@
                     installBtn.classList.remove('show');
                 });
             } else if (isIOS()) {
-                // iOS - show instructions
                 installInstructions.classList.add('show');
                 showToast('iOS Installation', 'Follow the instructions below');
             }
         }
 
-        // Check if already installed
-        window.addEventListener('appinstalled', () => {
-            installBtn.classList.remove('show');
-            showToast('App Installed!', 'Chronos is now on your home screen');
-        });
-
-        // Show install button on profile tab if available
-        function checkInstallAvailability() {
-            if (isIOS()) {
-                installInstructions.classList.add('show');
-            }
-        }
-
-        // Dark Mode
-        let isDarkMode = true;
-        
-        function toggleDarkMode() {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('light-mode', !isDarkMode);
-            document.getElementById('dark-mode-toggle').classList.toggle('active', isDarkMode);
-            document.getElementById('theme-color-meta').setAttribute('content', isDarkMode ? '#0F1117' : '#F3F4F6');
-            localStorage.setItem('darkMode', isDarkMode);
-            showToast('Theme Changed', isDarkMode ? 'Dark mode enabled' : 'Light mode enabled');
-        }
-
-        function loadDarkMode() {
-            const saved = localStorage.getItem('darkMode');
-            if (saved === 'false') {
-                toggleDarkMode();
-            }
-        }
-
-        // Tab Switching
+        // ============================================
+        // TAB SWITCHING
+        // ============================================
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.getElementById('tab-' + tabName).classList.add('active');
@@ -558,13 +983,14 @@
             
             document.getElementById('main-content').scrollTop = 0;
 
-            // Check install availability when viewing profile
             if (tabName === 'profile') {
-                checkInstallAvailability();
+                if (isIOS()) installInstructions.classList.add('show');
             }
         }
 
-        // Bottom Sheet
+        // ============================================
+        // BOTTOM SHEET
+        // ============================================
         function showBottomSheet(type) {
             const overlay = document.getElementById('bottom-sheet-overlay');
             const sheet = document.getElementById('bottom-sheet');
@@ -578,15 +1004,20 @@
                 title.textContent = 'Log Expense';
                 content.innerHTML = `
                     <input type="number" id="expense-amount" class="w-full bg-[#0F1117] border border-gray-700 rounded-xl px-4 py-3 text-white text-2xl mb-4" placeholder="$0.00" autofocus>
+                    <div class="flex gap-2 overflow-x-auto mb-4">
+                        <button onclick="selectCategory(this)" class="category-btn px-4 py-2 rounded-lg bg-primary/20 text-primary border border-primary whitespace-nowrap">Food</button>
+                        <button onclick="selectCategory(this)" class="category-btn px-4 py-2 rounded-lg bg-[#252932] text-gray-400 border border-gray-700 whitespace-nowrap">Transport</button>
+                        <button onclick="selectCategory(this)" class="category-btn px-4 py-2 rounded-lg bg-[#252932] text-gray-400 border border-gray-700 whitespace-nowrap">Shopping</button>
+                    </div>
                     <button onclick="addExpense()" class="w-full bg-primary text-white font-bold py-4 rounded-xl">Save</button>
                 `;
             } else if (type === 'habit') {
                 title.textContent = 'Complete Habit';
                 content.innerHTML = `
-                    <button onclick="completeHabit('Meditation')" class="w-full btn mb-3">
+                    <button onclick="completeQuickHabit('Meditation', 'physical')" class="w-full btn mb-3">
                         <span class="text-white">Morning Meditation</span>
                     </button>
-                    <button onclick="completeHabit('Reading')" class="w-full btn">
+                    <button onclick="completeQuickHabit('Reading', 'mental')" class="w-full btn">
                         <span class="text-white">Read 20 Pages</span>
                     </button>
                 `;
@@ -598,28 +1029,36 @@
             document.getElementById('bottom-sheet').classList.remove('show');
         }
 
-        function addExpense() {
-            const amount = document.getElementById('expense-amount').value;
-            if (amount) {
-                showToast('Expense Logged', '$' + amount + ' added');
-                triggerConfetti();
-                hideBottomSheet();
-            }
+        function selectCategory(btn) {
+            document.querySelectorAll('.category-btn').forEach(b => {
+                b.classList.remove('bg-primary/20', 'text-primary', 'border-primary');
+                b.classList.add('bg-[#252932]', 'text-gray-400', 'border-gray-700');
+            });
+            btn.classList.remove('bg-[#252932]', 'text-gray-400', 'border-gray-700');
+            btn.classList.add('bg-primary/20', 'text-primary', 'border-primary');
         }
 
-        function completeHabit(name) {
-            showToast('Habit Complete!', name + ' completed. +50 XP');
+        function completeQuickHabit(name, pillar) {
+            userData.stats[pillar]++;
+            userData.stats.habitsCompleted++;
+            addXP(50);
+            saveUserData();
+            updateUI();
+            showToast('Habit Complete!', `${name} completed. +50 XP`);
             triggerConfetti();
             hideBottomSheet();
         }
 
-        // Mode Activation
+        // ============================================
+        // MODE ACTIVATION
+        // ============================================
         function activateMode(mode) {
             const banner = document.getElementById('active-mode-banner');
             const names = { work: 'Work Mode', workout: 'Workout Mode', sleep: 'Sleep Mode' };
             banner.classList.add('show');
             document.getElementById('mode-name').textContent = names[mode];
             showToast('Mode Activated', names[mode] + ' is now active');
+            sendNotification('Mode Activated', `${names[mode]} started`);
         }
 
         function endActiveMode() {
@@ -627,7 +1066,9 @@
             showToast('Mode Ended', 'Focus session completed');
         }
 
-        // Toast Notification
+        // ============================================
+        // TOAST NOTIFICATION
+        // ============================================
         function showToast(title, body) {
             const toast = document.getElementById('toast');
             document.getElementById('toast-title').textContent = title;
@@ -636,7 +1077,9 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Confetti
+        // ============================================
+        // CONFETTI
+        // ============================================
         function triggerConfetti() {
             const canvas = document.getElementById('confetti-canvas');
             const ctx = canvas.getContext('2d');
@@ -673,17 +1116,19 @@
             animate();
         }
 
-        // Notifications
-        function requestNotificationPermission() {
-            if ('Notification' in window) {
-                Notification.requestPermission();
-            }
-        }
-
-        // Initialize
+        // ============================================
+        // INITIALIZE
+        // ============================================
         document.addEventListener('DOMContentLoaded', () => {
-            loadDarkMode();
+            loadUserData();
             
+            // Apply saved dark mode
+            if (!userData.settings.darkMode) {
+                document.body.classList.add('light-mode');
+                document.getElementById('dark-mode-toggle').classList.remove('active');
+            }
+            
+            // Greeting
             const hour = new Date().getHours();
             const greeting = document.getElementById('greeting');
             if (hour < 12) greeting.textContent = 'Good Morning';
